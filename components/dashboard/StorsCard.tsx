@@ -13,7 +13,7 @@ const StorsCard = () => {
      const fetchStors=async()=>{
          if(account){
             try {
-                const data=await getAccountStores(account.id)
+                const data=await getAccountStores(account.id,3)
                 setStors(data)
              } catch (error) {
                 

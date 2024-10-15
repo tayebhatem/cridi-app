@@ -14,6 +14,7 @@ const OnboardingScreen = () => {
  if (session) {
   return <Redirect href={"/dashboard"} />;
 }
+
   return (
    <SafeAreaView className='p-4 flex justify-end items-center   bg-white h-full'>
 
@@ -22,7 +23,7 @@ const OnboardingScreen = () => {
     <Text className='text-[#ccc]' >
 Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi cum magni nesciunt reprehenderit voluptas amet quidem corrupti aperiam, reiciendis quia animi, facilis quis. Iste fugit, at repellendus porro veritatis consequuntur.
     </Text>
-    <Button onChange={()=>router.push('./auth/sign-in')} title='Login'/>
+    <Button onChange={async()=>router.push('./auth/sign-in')} title='Login'/>
    </SafeAreaView>
   )
 }

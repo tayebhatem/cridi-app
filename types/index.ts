@@ -1,3 +1,5 @@
+import { ImageSourcePropType } from "react-native";
+
 export interface AccountType{
     id:string;
     name:string;
@@ -41,4 +43,10 @@ export interface PaymentsType{
     date:string;
     time:string;
     read:boolean;
+}
+
+export interface LanguageType{
+    id:string;
+    name:string;
+    image:ImageSourcePropType | undefined;
 }

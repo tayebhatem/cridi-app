@@ -2,9 +2,10 @@
 import React from 'react'
 import {  Tabs } from 'expo-router'
 import TabIcon from '@/components/ui/TabIcon'
+import useLanguageStore from '@/stores/useLanguageStore'
 
 const DashboardLayout = () => {
-
+  const {language}=useLanguageStore()
   return (
 
 <Tabs
@@ -30,7 +31,7 @@ screenOptions={{
       color={color}
       focused={focused}
       icon={'home'}
-      name='Home'
+      name={language?.id==='en'?"Home":language?.id==='fr'?"Accueil":"الرئيسية"}
       notification={0}
 
       />
@@ -40,7 +41,7 @@ screenOptions={{
       color={color}
       focused={focused}
       icon={'message1'}
-      name='Messages'
+      name={language?.id==='en'?"Messages":language?.id==='fr'?"Messages":"الرسائل"}
       notification={0}
 
       />
@@ -52,7 +53,7 @@ screenOptions={{
       color={color}
       focused={focused}
       icon={'bells'}
-      name='Notification'
+      name={language?.id==='en'?"Notifications":language?.id==='fr'?"Notifications":"الإشعارات"}
       notification={0}
       
       />
@@ -64,7 +65,7 @@ screenOptions={{
       color={color}
       focused={focused}
       icon={'setting'}
-      name='Settings'
+      name={language?.id==='en'?"Settings":language?.id==='fr'?"Paramètres":"الإعدادات"}
       notification={0}
       
       />

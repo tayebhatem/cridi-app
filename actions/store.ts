@@ -3,14 +3,14 @@ import { AccountUserType, StoreType } from "@/types"
 import { Query } from "react-native-appwrite"
 
 
-export const getAccountStores=async(account:string)=>{
+export const getAccountStores=async(account:string,limit:number)=>{
    try {
     const data=await databases.listDocuments(
         config.database,
         config.accountUser,
         [
-            Query.limit(3),
-            Query.equal('account',account)
+            Query.limit(limit),
+           
         ]
     )
      const stores=data.documents.map((item)=>{

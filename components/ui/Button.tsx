@@ -1,12 +1,19 @@
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
-import React, { useTransition } from 'react'
+import React, { useState, useTransition } from 'react'
 
-const Button = ({title,onChange}:{title:string,onChange:()=>void}) => {
-   const [isLoading,submit]=useTransition()
-  const onSubmit=()=>{
-      submit(()=>{
-        onChange()
-      })
+const Button = ({title,onChange}:{title:string,onChange:()=>Promise<void>}) => {
+
+   const [isLoading, setisLoading] = useState(false)
+  
+  const onSubmit=async()=>{
+    setisLoading(true)
+     try {
+      await onChange()
+     } catch (error) {
+      
+     }finally{
+      setisLoading(false)
+     }
   }
   return (
     <TouchableOpacity 

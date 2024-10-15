@@ -1,119 +1,131 @@
-import { View, Text, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { Link, useRouter } from 'expo-router'
-import { EvilIcons, FontAwesome, FontAwesome6, MaterialIcons } from '@expo/vector-icons'
-import { deleteSession } from '@/libs/appwrite'
-import ConfirmModal from '@/components/ui/ConfirmModal'
-import PageHeader from '@/components/ui/PageHeader'
-const accountData=[
-  {
-    id:1,
-    name:'Account',
-    link:'/account'
-  },
-  {
-    id:1,
-    name:'Password',
-    link:'/password'
-  },
-  {
-    id:1,
-    name:'Language',
-    link:'/language'
-  },
-]
+import { View, Text, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import {  useRouter } from 'expo-router';
+import {  FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { deleteSession } from '@/libs/appwrite';
+import ConfirmModal from '@/components/ui/ConfirmModal';
+import PageHeader from '@/components/ui/PageHeader';
+import PageLayout from '@/components/ui/PageLayout';
+import LanguageDrawer from '@/components/ui/LanguageDrawer';
+
+import { settingsTranslation } from '@/constants/translation';
+import useLanguageStore from '@/stores/useLanguageStore';
+
 const SettingsScreen = () => {
-  const router=useRouter()
-  const [open, setOpen] = useState(false)
-  const logout=async()=>{
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [openLanguage, setopenLanguage] = useState(false);
+  const { language } = useLanguageStore();
+  const settings = settingsTranslation(language);
+  const logout = async () => {
     try {
-      const response=await deleteSession()
-      if(response){
-        router.replace('/auth/sign-in')
-         setOpen(false)
+      const response = await deleteSession();
+      if (response) {
+        router.replace('/auth/sign-in');
+        setOpen(false);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
+
   return (
- <SafeAreaView className='bg-neutral-100 h-full p-4 space-y-3'>
+    <>
+      <PageLayout>
+        <PageHeader title={settings.settingsTile} />
+        <View className='bg-white shadow-black shadow-md rounded-md p-4 space-y-4'>
 
-  <PageHeader title='Settings'/>
+          <TouchableOpacity
+            onPress={() => router.push('../../account')}
+            activeOpacity={0.8}
+            className='flex flex-row items-center pb-4 w-full border-b border-neutral-100'>
+            <View className='flex flex-row items-center gap-x-3 w-full'>
+              <FontAwesome name='user' color={'#aaa'} size={24} />
+              <Text className='text-neutral-400 font-kufi-medium'>{settings.account}</Text>
+            </View>
+            <MaterialIcons name='arrow-forward-ios' color={'#A3A3A3'} size={24} />
+          </TouchableOpacity>
 
- <View className=' bg-white shadow-black shadow-md rounded-md p-4 space-y-4'>
+          <TouchableOpacity
+            onPress={() => router.push('../../password')}
+            activeOpacity={0.8}
+            className='flex flex-row items-center justify-between w-full pb-4 border-b border-neutral-100'>
+            <View className='flex flex-row items-center gap-x-3 w-full'>
+              <FontAwesome name='lock' color={'#A3A3A3'} size={24} />
+              <Text className='text-neutral-400 font-kufi-medium'>{settings.password}</Text>
+            </View>
+            <MaterialIcons name='arrow-forward-ios' color={'#A3A3A3'} size={24} />
+          </TouchableOpacity>
 
-  <TouchableOpacity 
-  onPress={()=>router.push('../../account')}
-  activeOpacity={0.8} 
-  className='flex flex-row items-center pb-4  w-full border-b border-neutral-100'>
-  <View className='flex flex-row items-center gap-x-3 w-full'>
-  <FontAwesome name='user' color={'#aaa'} size={24}/>
-  <Text className='text-[#aaa] text-base'>Account</Text>
-   </View>
-   <MaterialIcons name='arrow-forward-ios' color={'#aaa'} size={24} />
-  </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => router.push('../../notifications')}
+            activeOpacity={0.8}
+            className='flex flex-row items-center w-full pb-4 border-b border-neutral-100'>
+            <View className='flex flex-row items-center gap-x-3 w-full'>
+              <FontAwesome name='bell' color={'#A3A3A3'} size={24} />
+              <Text className='text-neutral-400 font-kufi-medium'>{settings.notifications}</Text>
+            </View>
+            <MaterialIcons name='arrow-forward-ios' color={'#aaa'} size={24} />
+          </TouchableOpacity>
 
-  <TouchableOpacity 
-  onPress={()=>router.push('../../password')}
-  activeOpacity={0.8} 
-  className='flex flex-row items-center  justify-between w-full pb-4   border-b border-neutral-100'>
-   <View className='flex flex-row items-center gap-x-3 w-full'>
-   <FontAwesome name='lock' color={'#aaa'} size={24}/>
-      <Text className='text-[#aaa] text-base'>Password</Text>
-   </View>
-   <MaterialIcons name='arrow-forward-ios' color={'#aaa'} size={24} />
-  </TouchableOpacity>
-  
-  <TouchableOpacity activeOpacity={0.8} className='flex flex-row items-center  w-full pb-4  border-b border-neutral-100'>
+          <TouchableOpacity
+            onPress={() => setopenLanguage(true)}
+            activeOpacity={0.8}
+            className='flex flex-row items-center w-full'>
+            <View className='flex flex-row items-center gap-x-3 w-full'>
+              <FontAwesome name='globe' color={'#A3A3A3'} size={24} />
+              <Text className='text-neutral-400 font-kufi-medium'>{settings.languageLabel}</Text>
+            </View>
+          </TouchableOpacity>
 
-  <View className='flex flex-row items-center gap-x-3 w-full'>
-  <FontAwesome name='bell' color={'#aaa'} size={24}/>
-   <Text className='text-[#aaa] text-base'>Notifications</Text>
-   </View>
-   <MaterialIcons name='arrow-forward-ios' color={'#aaa'} size={24} />
-  </TouchableOpacity>
+        </View>
 
-  <TouchableOpacity activeOpacity={0.8} className='flex flex-row items-center  w-full  '>
-  <View className='flex flex-row items-center gap-x-3 w-full'>
-  <FontAwesome name='globe' color={'#aaa'} size={24}/>
-   
-   <Text className='text-[#aaa] text-base'>Language</Text>
-  </View>
-   
-  
-  </TouchableOpacity>
+        <View className='bg-white shadow-black shadow-md rounded-md p-4 space-y-4'>
 
- </View>
+          <TouchableOpacity
+            onPress={() => router.push('../../report')}
+            activeOpacity={0.8}
+            className='flex flex-row items-center w-full pb-4 border-b border-neutral-100'>
+            <View className='flex flex-row items-center gap-x-3 w-full'>
+              <FontAwesome name='warning' color={'#aaa'} size={24} />
+              <Text className='text-neutral-400 font-kufi-medium'>{settings.report}</Text>
+            </View>
+            <MaterialIcons name='arrow-forward-ios' color={'#A3A3A3'} size={24} />
+          </TouchableOpacity>
 
- <View className=' bg-white shadow-black shadow-md rounded-md p-4 space-y-4'>
-  <View className='flex flex-row items-center gap-x-3 w-full'>
-    <FontAwesome name='warning' color={'#aaa'} size={24}/>
-    <TouchableOpacity>
-      <Text className='text-[#aaa] text-base'>Report</Text>
-    </TouchableOpacity>
-  </View>
+          <TouchableOpacity
+            onPress={() => router.push('../../faq')}
+            activeOpacity={0.8}
+            className='flex flex-row items-center w-full pb-4 border-b border-neutral-100'>
+            <View className='flex flex-row items-center gap-x-3 w-full'>
+              <FontAwesome name='question' color={'#A3A3A3'} size={24} />
+              <Text className='text-neutral-400 font-kufi-medium'>{settings.faq}</Text>
+            </View>
+            <MaterialIcons name='arrow-forward-ios' color={'#aaa'} size={24} />
+          </TouchableOpacity>
 
-  <View className='flex flex-row items-center gap-x-3 w-full'>
-    <FontAwesome name='question' color={'#aaa'} size={24}/>
-    <TouchableOpacity>
-      <Text className='text-[#aaa] text-base'>FAQ</Text>
-    </TouchableOpacity>
-  </View>
+          <TouchableOpacity 
+          activeOpacity={0.8} 
+          onPress={() => setOpen(true)}
+          className='flex flex-row items-center  space-x-2 '>
+            <FontAwesome name='sign-out' color={'#ef4444'} size={24} />
+            <Text className='text-red-500 font-kufi-medium'>{settings.logout}</Text>
+          </TouchableOpacity>
 
-<View className='flex flex-row items-center gap-x-3 w-full '>
-<FontAwesome name='sign-out' color={'#ef4444'} size={24}/>
-<TouchableOpacity  activeOpacity={0.8} onPress={()=>setOpen(true)}>
-   
-    <Text className='text-red-500 text-base'>Logout</Text>
-  </TouchableOpacity>
-</View>
+        </View>
 
- </View>
- <ConfirmModal onChange={logout} open={open} setOpen={setOpen}/>
- </SafeAreaView>
-  )
-}
+      </PageLayout>
 
-export default SettingsScreen
+      <ConfirmModal
+        title={settings.logoutConfirmTitle}
+        description={settings.logoutConfirmDesc}
+        onChange={logout}
+        open={open}
+        setOpen={setOpen} />
+
+      <LanguageDrawer open={openLanguage} setOpen={setopenLanguage} />
+    </>
+  );
+};
+
+export default SettingsScreen;

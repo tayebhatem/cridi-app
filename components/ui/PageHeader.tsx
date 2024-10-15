@@ -7,7 +7,7 @@ const PageHeader = ({title}:{title:string}) => {
     const router=useRouter()
   return (
     <View className='flex flex-row items-center justify-between'>
-    <Text className='text-xl font-medium'>{title}</Text>
+    <Text className='font-kufi-semi-bold text-base'>{title}</Text>
      
      <TouchableOpacity activeOpacity={0.8} onPress={()=>router.back()}>
        <AntDesign name='arrowleft' size={28} />

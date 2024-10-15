@@ -20,31 +20,23 @@ async function save(key:string, value:string) {
 
 
 export const login=async(username:string,password:string)=>{
-  try {
+  
       const data=await databases.listDocuments(
         config.database,
         config.account,
         [
-            Query.and([
-                Query.equal('username',username),
-                Query.equal('password',password)
-            ])
+          Query.equal('username',username),
         ]
       )
+      if(data.documents[0]){
+      if(data.documents[0].password!==password) throw new Error('Wrong password.')  
 
-
-      if(data){
-     
     const session =await createSession(data.documents[0].$id)
     if(session) await save('session',session.$id) 
-        
-
       return session
+      }else{
+        throw new Error('Wrong username.')
       }
-     
-  } catch (error) {
-    console.log('login error'+error)
-  }
 }
 
 
@@ -134,4 +126,37 @@ export const updateAccount=async(id:string,name:string,phone:string)=>{
       } catch (error) {
         console.log(error)
       }
+}
+
+
+export const  getAccount=async(account:string)=>{
+      try {
+        const data=await databases.getDocument(
+          config.database,
+          config.account,
+          account
+        )
+
+        return data
+      } catch (error) {
+       
+      }
+}
+export const updatePassword=async(id:string,oldPassword:string,newpassword:string)=>{
+    
+      const account=await getAccount(id)
+      if(!account) return
+      const currentPassword=account.password
+      if(currentPassword!==oldPassword) throw new Error('Current password is wrong')
+
+        const data=await databases.updateDocument(
+          config.database,
+          config.account,
+          id,
+          {
+            newpassword
+          }
+        )
+        return data
+    
 }

@@ -20,7 +20,7 @@ const TabIcon = ({ icon, color,focused, name,notification }:{icon:any,color:stri
     color={color}/>
    </View>
       <Text
-       className={`text-sm  capitalize ${focused?'text-primary-500':'text-[#A5A29D]'} `}
+       className={`text-sm  capitalize font-kufi-medium ${focused?'text-primary-500':'text-neutral-400'} `}
        
       >
         {name}

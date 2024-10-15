@@ -8,6 +8,7 @@ import { Link } from 'expo-router';
 import StorsCard from '@/components/dashboard/StorsCard';
 import Hero from '@/components/dashboard/Hero';
 import PageLayout from '@/components/ui/PageLayout';
+import LastStoresCard from '@/components/store/LastStoresCard';
 const HomeScreen = () => {
   const {account}=useAccountStore()
 
@@ -17,17 +18,9 @@ const HomeScreen = () => {
      <ScrollView className='space-y-4' showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
     
  <Hero/>   
-    <View>
-      <View className='flex flex-row items-center justify-between'>
-        <Text className='text-2xl font-medium'>My stors</Text>
-        <Link href='../../stores' className='text-primary-500 font-medium text-base'>
-        Read more
-      
-        </Link>
-      </View>
-     <StorsCard/>
-    
-    </View>
+<View>
+<LastStoresCard/>
+</View>
      </ScrollView>
    </PageLayout>
   )

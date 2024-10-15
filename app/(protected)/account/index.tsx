@@ -10,10 +10,13 @@ import Button from '@/components/ui/Button'
 import QRCode from 'react-native-qrcode-svg';
 import { useRouter } from 'expo-router'
 import { updateAccount } from '@/libs/appwrite'
+import Alert from '@/components/ui/Alert'
+import useLanguageStore from '@/stores/useLanguageStore'
+import { accountTranslation } from '@/constants/translation'
 const AccountScreen = () => {
     const {account,setAccount}=useAccountStore();
     const router=useRouter()
-     
+     const [openSave, setopenSave] = useState(false)
   const [accountForm, setAccountForm] = useState({
     name: {
       value: '',
@@ -24,6 +27,9 @@ const AccountScreen = () => {
       error: '',
     },
   });
+
+  const { language } = useLanguageStore();
+  const accountTranslations=accountTranslation(language)
   const validateForm = () => {
     let valid = true;
 
@@ -32,7 +38,7 @@ const AccountScreen = () => {
         ...prevState,
         name: {
           ...prevState.name,
-          error: 'Name is required.',
+          error: accountTranslations.nameRequired,
         },
       }));
       valid = false;
@@ -71,7 +77,7 @@ const AccountScreen = () => {
                 const data=await updateAccount(account.id,accountForm.name.value,accountForm.phone.value)
               if(data) {
                  setAccount(data)
-                 router.back()
+                 setopenSave(true)
 
               }
     
@@ -83,6 +89,10 @@ const AccountScreen = () => {
   
    }
 
+   const onChange=()=>{
+       setopenSave(false)
+       router.back()
+    }
    useEffect(() => {
   if(account){
     setAccountForm({
@@ -99,8 +109,9 @@ const AccountScreen = () => {
    }, [account])
    
   return (
- <PageLayout>
-     <PageHeader title='Account'/>
+<>
+<PageLayout>
+     <PageHeader title={accountTranslations.accountTitle}/>
      
     <View className='bg-white shadow-primary-500 shadow-md rounded-md p-6 w-full  flex items-center space-y-4'>
    <View className='flex items-center'>
@@ -109,26 +120,43 @@ const AccountScreen = () => {
    <Text className='text-neutral-400'>{account?.username}</Text>
    </View>
     <Input 
-    title='Name'
+    title={accountTranslations.nameLabel}
     type='text'
-    placeholder='Name'
-    value={account?.name}
+    placeholder='Jhone doa'
+    value={accountForm.name.value}
     onChange={handleNameChange}
     error={accountForm.name.error}
     />
+     {accountForm.name.error ? (
+          <Text className='text-red-500 w-full'>{accountForm.name.error}</Text>
+        ) : null}
     <Input 
-    title='Phone'
+    title={accountTranslations.phoneLabel}
     type='phone'
-    placeholder='07889900077'
-    value={account?.phone}
+    placeholder='0779674976'
+    value={accountForm.phone.value}
     onChange={handlePhoneChange}
     error=''
     />
-
-    <Button onChange={saveChange} title='Save change'/>
+ 
+ <View className='py-4'>
+ <QRCode
+    value={account?.username} 
+    size={200}
+   />
+ </View>
+    <Button onChange={saveChange} title={accountTranslations.saveChangeButton}/>
     </View>
    
  </PageLayout>
+ <Alert 
+ title={accountTranslations.backNowTitle}
+ open={openSave}
+ onSave={onChange}
+ type='SUCCESS'
+ description={accountTranslations.successMessage}
+ />
+</>
   )
 }
 

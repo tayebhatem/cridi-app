@@ -1,4 +1,4 @@
-import { View, Text, Alert, Image } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Input from '@/components/ui/Input';
@@ -7,11 +7,13 @@ import { useRouter } from 'expo-router';
 
 import { login } from '@/libs/appwrite';
 import useAccountStore from '@/stores/useAccountStore';
+import Alert from '@/components/ui/Alert';
 
 
 const SignInScreen = () => {
     const router=useRouter();
-   
+   const [open, setOpen] = useState(false)
+   const [error, setError] = useState('')
   const [loginForm, setLoginForm] = useState({
     username: {
       value: '',
@@ -83,16 +85,42 @@ const SignInScreen = () => {
     const isValid = validateForm();
 
     if (isValid) {
-     const session =await login(loginForm.username.value,loginForm.password.value)
-     if(session){
-    
-        router.push('../../dashboard')
-     }
-  
+   try {
+    const session =await login(loginForm.username.value,loginForm.password.value)
+    if(session){
+   
+       router.push('../../dashboard')
+    }
+ 
+   } catch (error) {
+    if(error instanceof Error){
+    if(error.message==='Wrong username.'){
+      setLoginForm((prevState) => ({
+        ...prevState,
+        username: {
+          ...prevState.username,
+          error: error.message,
+        },
+      }));
+    }else if(error.message==='Wrong password.'){
+      setLoginForm((prevState) => ({
+        ...prevState,
+        password: {
+          ...prevState.password,
+          error: error.message,
+        },
+      }));
+    }else{
+      setError(error.message)
+      setOpen(true)
+    }
+    }
+   }
     }
   };
 
   return (
+  <>
     <SafeAreaView className="bg-white p-4 h-full ">
       <View className='w-full flex  my-4 space-y-4'>
 
@@ -129,7 +157,7 @@ const SignInScreen = () => {
           error={loginForm.password.error}
           onChange={handlePasswordChange} // Handle change
         />
-        {/* Show password error */}
+      
         {loginForm.password.error ? (
           <Text style={{ color: 'red' }}>{loginForm.password.error}</Text>
         ) : null}
@@ -137,6 +165,14 @@ const SignInScreen = () => {
       <Button title='Login' onChange={handleSubmit}/>
       </View>
     </SafeAreaView>
+    <Alert
+    title='Back'
+    type='WARNING'
+    description={error}
+    onSave={()=>setOpen(false)}
+    open={open}
+    />
+  </>
   );
 };
 

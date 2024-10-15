@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 const PageLayout = ({children}:{children:ReactNode}) => {
   return (
-   <SafeAreaView className='bg-neutral-100 space-y-4 h-full overflow-hidden p-4'>
+   <SafeAreaView className='bg-neutral-100  space-y-4 h-full overflow-hidden p-4'>
 {
     children
 }

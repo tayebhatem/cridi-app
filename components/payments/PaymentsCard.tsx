@@ -3,10 +3,12 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { PaymentsType } from '@/types'
 import { getPayments } from '@/actions/payments'
 import PaymentItem from './PaymentItem'
+import useLanguageStore from '@/stores/useLanguageStore'
 
 const PaymentsCard = ({id}:{id:string}) => {
     const [payments, setPayments] = useState<PaymentsType[] | undefined>([])
     const [isLoading, setIsLoading] = useState(false)
+    const {language}=useLanguageStore()
     const fetchPayments=useCallback(async()=>{
         setIsLoading(true)
         try {
@@ -30,6 +32,7 @@ const PaymentsCard = ({id}:{id:string}) => {
    
      <View className='bg-white p-4 mb-8 flex justify-center  rounded-md shadow-primary-500 shadow-md'>
    <FlatList
+    className='h-[100%] '
    showsVerticalScrollIndicator={false}
    data={payments}
    keyExtractor={item=>item.id}
@@ -38,7 +41,11 @@ const PaymentsCard = ({id}:{id:string}) => {
     <RefreshControl refreshing={isLoading} onRefresh={fetchPayments}/>
    }
    ListEmptyComponent={()=>(
-    <Text className='text-neutral-400 text-center  align-middle'>No debts are found.</Text>
+    <View className=' h-full'>
+      <Text className='text-neutral-400  text-center  align-middle font-kufi'>
+      {language?.id==='en'?"No payments are found.":language?.id==='fr'?"Aucune paiements n'est trouvée.":"لم يتم العثور على مدفوعات."}
+        </Text>
+      </View>
    )}
    />
 </View>

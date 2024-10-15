@@ -4,9 +4,11 @@ import { PaymentsType } from '@/types'
 import { getPayments } from '@/actions/payments'
 import { Link } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
+import useLanguageStore from '@/stores/useLanguageStore'
 
 const LastPaymentsCard = ({id}:{id:string}) => {
   const [LastPayments, setLastPayments] = useState<PaymentsType[] | undefined>([])
+  const {language}=useLanguageStore()
   useEffect(() => {
       const fetchLastDebts=async()=>{
           if(id){
@@ -24,9 +26,11 @@ const LastPaymentsCard = ({id}:{id:string}) => {
   return (
     <View className='space-y-2'>
      <View className='flex flex-row items-center justify-between'>
-  <Text className='text-lg font-medium '>Last payments</Text>
-  <Link href={`../payments/${id}`} className='capitalize text-base font-medium'>
-  read more
+  <Text className='font-kufi-medium  '>
+    {language?.id==='en'?"Last payments":language?.id==='fr'?"Derniers paiements":"الدفعات الأخيرة"}
+  </Text>
+  <Link href={`../payments/${id}`} className='capitalize text-primary-500 font-kufi-medium '>
+  {language?.id==='en'?"Read more":language?.id==='fr'?"En savoir plus":"إقرأ المزيد"}
   </Link>
 </View>
 <View className='bg-white p-4  rounded-md shadow-primary-500 shadow-md space-y-4 '>
@@ -54,7 +58,9 @@ const LastPaymentsCard = ({id}:{id:string}) => {
     </View>
   )):
  <View >
-<Text className='text-neutral-400 text-center w-full'>No payments are found.</Text>
+  <Text className='text-neutral-400  text-center  align-middle font-kufi'>
+      {language?.id==='en'?"No payments are found.":language?.id==='fr'?"Aucune paiements n'est trouvée.":"لم يتم العثور على مدفوعات."}
+        </Text>
  </View>
    }
 </View>
