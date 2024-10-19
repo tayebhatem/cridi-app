@@ -13,10 +13,13 @@ import { updateAccount } from '@/libs/appwrite'
 import Alert from '@/components/ui/Alert'
 import useLanguageStore from '@/stores/useLanguageStore'
 import { accountTranslation } from '@/constants/translation'
+import ConfirmModal from '@/components/ui/ConfirmModal'
+
 const AccountScreen = () => {
     const {account,setAccount}=useAccountStore();
     const router=useRouter()
      const [openSave, setopenSave] = useState(false)
+     const [open, setopen] = useState(false)
   const [accountForm, setAccountForm] = useState({
     name: {
       value: '',
@@ -77,7 +80,7 @@ const AccountScreen = () => {
                 const data=await updateAccount(account.id,accountForm.name.value,accountForm.phone.value)
               if(data) {
                  setAccount(data)
-                 setopenSave(true)
+                setopenSave(true)
 
               }
     
@@ -110,45 +113,53 @@ const AccountScreen = () => {
    
   return (
 <>
-<PageLayout>
-     <PageHeader title={accountTranslations.accountTitle}/>
+<SafeAreaView className='bg-white dark:bg-dark-500 h-full p-6 space-y-4'>
+<PageHeader title={accountTranslations.accountTitle}/>
      
-    <View className='bg-white shadow-primary-500 shadow-md rounded-md p-6 w-full  flex items-center space-y-4'>
-   <View className='flex items-center'>
-   <Avatar size='Large' url={account?.avatar}/> 
-   <Text className='text-lg font-medium'>{account?.name}</Text>
-   <Text className='text-neutral-400'>{account?.username}</Text>
-   </View>
-    <Input 
-    title={accountTranslations.nameLabel}
-    type='text'
-    placeholder='Jhone doa'
-    value={accountForm.name.value}
-    onChange={handleNameChange}
-    error={accountForm.name.error}
-    />
-     {accountForm.name.error ? (
-          <Text className='text-red-500 w-full'>{accountForm.name.error}</Text>
-        ) : null}
-    <Input 
-    title={accountTranslations.phoneLabel}
-    type='phone'
-    placeholder='0779674976'
-    value={accountForm.phone.value}
-    onChange={handlePhoneChange}
-    error=''
-    />
- 
- <View className='py-4'>
- <QRCode
-    value={account?.username} 
-    size={200}
-   />
- </View>
-    <Button onChange={saveChange} title={accountTranslations.saveChangeButton}/>
+     <View className=''>
+    <View className='flex items-center '>
+    <Avatar size='Large' url={account?.avatar}/> 
+    <Text className='text-xl font-medium text-black dark:text-white'>{account?.name}</Text>
+    <Text className='text-neutral-400'>{account?.username}</Text>
     </View>
-   
- </PageLayout>
+     <Input 
+     title={accountTranslations.nameLabel}
+     type='text'
+     placeholder='Jhone doa'
+     value={accountForm.name.value}
+     onChange={handleNameChange}
+     error={accountForm.name.error}
+     />
+      {accountForm.name.error ? (
+           <Text className='text-red-500 w-full'>{accountForm.name.error}</Text>
+         ) : null}
+     <Input 
+     title={accountTranslations.phoneLabel}
+     type='phone'
+     placeholder='0779674976'
+     value={accountForm.phone.value}
+     onChange={handlePhoneChange}
+     error=''
+     />
+  
+  <View className='pt-6 flex items-center'>
+  <QRCode
+     value={account?.username} 
+     size={200}
+    />
+  </View>
+     <Button onChange={async()=>setopen(true)} title={accountTranslations.saveChangeButton}/>
+     </View>
+    
+</SafeAreaView>
+<ConfirmModal
+onChange={saveChange}
+description={language?.id==='en'?"Are you sure you want to save the changes to your account information?":language?.id==='fr'?"Êtes-vous sûr de vouloir enregistrer les modifications de vos informations de compte ?":"هل أنت متأكد أنك تريد حفظ التغييرات على معلومات حسابك؟"}
+open={open}
+setOpen={setopen}
+title={language?.id==='en'?"Confirm Changes":language?.id==='fr'?"Confirmer les modifications":"تأكيد التغييرات"}
+
+/>
  <Alert 
  title={accountTranslations.backNowTitle}
  open={openSave}

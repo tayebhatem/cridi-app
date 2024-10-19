@@ -17,7 +17,7 @@ const StoreItem = ({store}:{store:AccountUserType}) => {
    <View className='flex items-center'>
      <Avatar size='Medium' url={store.store.avatar}/>
     <View>
-    <Text className='font-medium text-base'>{store.store.name}</Text>
+    <Text className='font-medium text-base text-black dark:text-white text-center'>{store.store.name}</Text>
     <Text className='text-neutral-400 text-center text-sm'>{store.store.adress}</Text>
     <Text className='text-neutral-400 text-center text-sm'>{store.store.phone}</Text>
     </View>

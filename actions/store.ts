@@ -10,7 +10,7 @@ export const getAccountStores=async(account:string,limit:number)=>{
         config.accountUser,
         [
             Query.limit(limit),
-           
+           Query.equal('account',account)
         ]
     )
      const stores=data.documents.map((item)=>{

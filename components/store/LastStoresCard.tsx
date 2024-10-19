@@ -29,10 +29,10 @@ const LastStoresCard = () => {
   return (
     <View>
     <View className='flex flex-row items-center justify-between '>
-      <Text className='text-xl font-medium font-kufi-medium'>{language?.id==='en'?"Stors":language?.id==='fr'?"Magasins":"محلات"}</Text>
+      <Text className='text-lg text-black dark:text-white font-medium font-kufi-medium'>{language?.id==='en'?"Stors":language?.id==='fr'?"Magasins":"محلات"}</Text>
       <Link 
       href='../../stores' 
-      className='text-primary-500 font-medium text-base font-kufi-medium'
+      className='text-primary-500 font-medium  font-kufi-medium leading-6'
       >
       {language?.id==='en'?"Read more":language?.id==='fr'?"En savoir plus":"إقرأ المزيد"}
       </Link>
@@ -42,7 +42,7 @@ const LastStoresCard = () => {
    <FlatList
    showsHorizontalScrollIndicator={false}
    showsVerticalScrollIndicator={false}
-  
+    contentContainerStyle={{gap:10}}
    horizontal
    data={stors}
    keyExtractor={item=>item.id}

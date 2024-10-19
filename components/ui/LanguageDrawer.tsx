@@ -28,10 +28,10 @@ const LanguageDrawer = ({open,setOpen}:{open:boolean,setOpen:(open:boolean)=>voi
                 onPress={()=>seleteLanguage(item)}
                 activeOpacity={0.8} 
                 key={item.id} 
-                className='py-4  flex flex-row items-center justify-between border-b border-neutral-100'>
+                className='py-4  flex flex-row items-center justify-between border-b border-neutral-100  dark:border-dark-300'>
                  <View className='flex flex-row items-center space-x-6'>
                  <Image source={item.image} className='w-8 h-8'/>
-                 <Text className='text-left font-kufi-medium text-base' >{item.name}</Text>
+                 <Text className='text-left font-kufi-medium text-base text-black dark:text-white' >{item.name}</Text>
                  </View>
                  <FontAwesome name='check-circle' size={24} color={language?.id===item.id?"#059669":"#A3A3A3"} />
                 </TouchableOpacity>

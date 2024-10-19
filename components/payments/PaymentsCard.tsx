@@ -32,7 +32,7 @@ const PaymentsCard = ({id}:{id:string}) => {
    
      <View className='bg-white p-4 mb-8 flex justify-center  rounded-md shadow-primary-500 shadow-md'>
    <FlatList
-    className='h-[100%] '
+    className='h-[100%]'
    showsVerticalScrollIndicator={false}
    data={payments}
    keyExtractor={item=>item.id}

@@ -17,11 +17,10 @@ const SessionProvider = ({ children }:{children:ReactNode}) => {
         username:session.account.username,
         type:session.account.type,
         avatar:session.account.avatar,
+        phone:session.account.phone
        })
 
     }
-    
-   
   }, [session])
   
   if(isLoading) return <Loader/>

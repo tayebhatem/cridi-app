@@ -8,7 +8,7 @@ export const languageData:LanguageType[]=[
     },
     {
         id:'fr',
-        name:'Francais',
+        name:'Français',
         image:require('../assets/images/fr.png')
     },
     {

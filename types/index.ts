@@ -46,7 +46,25 @@ export interface PaymentsType{
 }
 
 export interface LanguageType{
-    id:string;
+    id:'en'|'fr'|'ar';
     name:string;
     image:ImageSourcePropType | undefined;
+}
+export interface publicationType{
+    id:string;
+    title:string;
+    description:string;
+    image:string;
+    
+}
+export interface NotificationType{
+    id:string;
+    read:boolean;
+    type:'debt'|'payment'|'publication'
+    account:string;
+    storeName:string;
+    storeImage:string,
+   text:string;
+   accountuser:string;
+   date:string;
 }

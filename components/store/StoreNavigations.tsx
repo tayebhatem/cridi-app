@@ -3,10 +3,34 @@ import React from 'react'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
 import useLanguageStore from '@/stores/useLanguageStore'
+import { useChatContext } from 'stream-chat-expo'
+import useAccountStore from '@/stores/useAccountStore'
+import useStore from '@/stores/useStore'
 
-const StoreNavigations = ({id}:{id:string}) => {
+const StoreNavigations = ({id}:{id:string | undefined}) => {
   const router=useRouter()
   const {language}=useLanguageStore()
+  const{client}=useChatContext()
+  const {account}=useAccountStore()
+  const{store}=useStore()
+
+  const startChat=async()=>{
+    try {
+     if(account && store){
+      
+      const channel=client.channel('messaging',
+        {
+          members:[account?.id,store?.id]
+        })
+   await channel.watch()
+  
+  router.push(`../conversation/${channel.cid}`)
+     }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  
   return (
     <View className='flex flex-row items-center gap-x-6 '>
 
@@ -34,9 +58,9 @@ const StoreNavigations = ({id}:{id:string}) => {
     </Text>
     </View>
 
-    <View className='flex justify-center items-center opacity-50'>
+    <View className='flex justify-center items-center '>
     <TouchableOpacity 
-    disabled={true}
+   onPress={startChat}
     activeOpacity={0.8} 
     className='p-3 w-12 h-12 flex items-center justify-center  rounded-full bg-blue-100 text-blue-600 '>
     <Ionicons name='chatbubble-ellipses-outline' size={24} color={'#2563eb'}/>

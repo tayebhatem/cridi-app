@@ -14,7 +14,7 @@ const PayementsScreen = () => {
   <PageLayout>
       <PageHeader title= {language?.id==='en'?"Payments":language?.id==='fr'?"Paiements":"الدفعات"}/>
    
-   <View className=''>
+   <View >
   <PaymentsCard id={id as string}/>
    </View>
   </PageLayout>

@@ -1,11 +1,19 @@
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {  Tabs } from 'expo-router'
 import TabIcon from '@/components/ui/TabIcon'
 import useLanguageStore from '@/stores/useLanguageStore'
-
+import { useColorScheme } from 'react-native'
+import useNotificationsStore from '@/stores/useNotificationsStore'
 const DashboardLayout = () => {
   const {language}=useLanguageStore()
+  const theme=useColorScheme()
+
+
+const {unreadMessagesCount,unreadNotificationsCount}=useNotificationsStore()
+
+
+   
   return (
 
 <Tabs
@@ -18,8 +26,8 @@ screenOptions={{
   tabBarShowLabel:false,
   tabBarStyle:{
     height:75,
-    backgroundColor:'#FFF',
-    borderColor:'#FFF'
+    backgroundColor:theme==='light'?'#FFF':'#282828',
+    borderColor:theme==='light'?'#FFF':'#3F3F3F'
 
   },
   
@@ -42,7 +50,7 @@ screenOptions={{
       focused={focused}
       icon={'message1'}
       name={language?.id==='en'?"Messages":language?.id==='fr'?"Messages":"الرسائل"}
-      notification={0}
+      notification={unreadMessagesCount}
 
       />
     )}} 
@@ -54,7 +62,7 @@ screenOptions={{
       focused={focused}
       icon={'bells'}
       name={language?.id==='en'?"Notifications":language?.id==='fr'?"Notifications":"الإشعارات"}
-      notification={0}
+      notification={unreadNotificationsCount}
       
       />
     )}}

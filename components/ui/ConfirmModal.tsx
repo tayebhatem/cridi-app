@@ -1,6 +1,7 @@
 import { View, Text, Modal, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { BlurView } from 'expo-blur';
+import useLanguageStore from '@/stores/useLanguageStore';
 const ConfirmModal = (
   { 
     title,
@@ -15,6 +16,7 @@ const ConfirmModal = (
       onChange:()=>Promise<void>
     }) => {
     const [isLoading, setIsLoading] = useState(false)
+    const {language}=useLanguageStore()
       const onConfirm=async()=>{
         setIsLoading(true)
            try {
@@ -41,8 +43,8 @@ const ConfirmModal = (
    >
    
     <View className='bg-white p-4 rounded-md space-y-3 w-3/4'>
-<Text className='text-lg font-medium '>{title}</Text>
-<Text className='text-neutral-400'>
+<Text className='text-lg font-kufi-medium '>{title}</Text>
+<Text className='text-neutral-400 font-kufi'>
 {description}
 </Text>
 <View className='flex flex-row items-center justify-end gap-x-2 '>
@@ -51,14 +53,14 @@ disabled={isLoading}
 onPress={()=>setOpen(false)}
 activeOpacity={0.8} 
 className={`flex-1 bg-neutral-100 rounded-md shadow-neutral-50 shadow-md p-3 ${isLoading && 'opacity-50'}`}>
-    <Text className='text-black text-center font-semibold'>Cancel</Text>
+    <Text className='text-black text-center font-kufi-medium'>{language?.id==='en'?"Cancel":language?.id==='fr'?"Annuler":"إلغاء"}</Text>
   </TouchableOpacity>
   <TouchableOpacity 
   disabled={isLoading}
   onPress={onConfirm}
   activeOpacity={0.8} 
   className={`flex-1 bg-red-500 rounded-md shadow-red-500 shadow-md p-3 ${isLoading && 'opacity-50'}`}>
-    <Text className='text-white text-center font-semibold'>Confirm</Text>
+  <Text className='text-white text-center font-kufi-medium'>{language?.id==='en'?"Confirm":language?.id==='fr'?"Confirmer":"تأكيد"}</Text>
   </TouchableOpacity>
 </View>
 </View>

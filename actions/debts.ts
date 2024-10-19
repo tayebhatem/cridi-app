@@ -11,7 +11,13 @@ export const getDebsts=async(accountUser:string,limit:number)=>{
         [
             Query.limit(limit),
             Query.orderDesc('$createdAt'),
-            Query.equal('accountUser',accountUser),
+           Query.and(
+            [
+              Query.equal('accountUser',accountUser),
+              Query.isNull('payment')
+            ]
+           )
+            
 
         ]
       )
@@ -44,7 +50,8 @@ export const getTotalDebts=async(accountUser:string)=>{
             Query.limit(100),
             Query.and([
                 Query.equal('accountUser',accountUser),
-                Query.equal('hidden',false)
+                Query.equal('hidden',false),
+                Query.isNull('payment')
             ])
         ]
     )
@@ -53,6 +60,7 @@ export const getTotalDebts=async(accountUser:string)=>{
     return total+item.amount
     },0)
 
+    
    return total
    } catch (error) {
     

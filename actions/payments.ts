@@ -9,10 +9,11 @@ export const getPayments=async(accountUser:string,limit:number)=>{
         config.transactions,
         [
             Query.limit(limit),
-            Query.orderAsc('$createdAt'),
+            Query.orderDesc('$createdAt'),
             Query.and([
                 Query.equal('accountUser',accountUser),
-                Query.equal('hidden',false)
+                Query.equal('hidden',false),
+                Query.isNotNull('payment'),
             ])
 
         ]

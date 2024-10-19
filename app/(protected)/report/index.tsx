@@ -9,17 +9,25 @@ import Alert from '@/components/ui/Alert'
 import { router } from 'expo-router'
 import useLanguageStore from '@/stores/useLanguageStore'
 import { reportTranslation } from '@/constants/translation'
+import { sendReport } from '@/libs/appwrite'
+import useAccountStore from '@/stores/useAccountStore'
 
 const ReportPage = () => {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const{account}=useAccountStore()
   const [showSuccess, setshowSuccess] = useState(false)
   const { language } = useLanguageStore();
   const report=reportTranslation(language)
     const onSave=async()=>{
      if(message.length>0){
         //send report message
-         setshowSuccess(true)
+      if(account){
+        
+        const data=await sendReport(message,account.id)
+ 
+       if(data) setshowSuccess(true)
+      }
      }else{
         setError(report.errorMessageRequired)
      }
@@ -32,7 +40,7 @@ const ReportPage = () => {
    <CardLayout>
     <TextArea title={report.messageTitle} onChange={setMessage} error={error} placeholder={report.messagePlaceholder} value={message} />
     {error && (
-          <Text style={{ color: 'red' }}>{error}</Text>
+          <Text  className='text-red-500 font-kufi '>{error}</Text>
         ) }
         <Button title={report.confirmButton} onChange={onSave}/>
        

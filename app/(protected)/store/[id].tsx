@@ -7,6 +7,7 @@ import StoreHeader from '@/components/store/StoreHeader'
 import StoreHero from '@/components/store/StoreHero'
 import LastPaymentsCard from '@/components/payments/LastPaymentsCard'
 import PageLayout from '@/components/ui/PageLayout'
+import StoreNavigations from '@/components/store/StoreNavigations'
 
 
 const StoreScreen = () => {
@@ -24,10 +25,13 @@ showsVerticalScrollIndicator={false}
 >
 
 <StoreHero id={id as string}/>
-
+<View>
+   <StoreNavigations id={id as string}/>
+   </View>
 <View>
 <LastDebtsCard id={id as string}/>
 </View>
+
 <View>
  <LastPaymentsCard id={id as string}/>
 </View>

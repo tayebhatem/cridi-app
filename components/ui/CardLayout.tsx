@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react'
 
 const CardLayout = ({children}:{children:ReactNode}) => {
   return (
-    <View className='p-4 bg-white  rounded-md shadow-primary-500 shadow-md'>
+    <View className='p-4 bg-white dark:bg-dark-400  rounded-md shadow-primary-500 shadow-md'>
       {children}
     </View>
   )

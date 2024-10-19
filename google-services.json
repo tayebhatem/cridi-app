@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "479964083305",
+    "project_id": "cridi-878aa",
+    "storage_bucket": "cridi-878aa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479964083305:android:410d13b9e0c9cb1474def8",
+        "android_client_info": {
+          "package_name": "com.tayebhatem.cridi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLdKntj8tJbHUzavvHV7W5gUVERYmCtkE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

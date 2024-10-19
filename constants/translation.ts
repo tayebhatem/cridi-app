@@ -46,7 +46,7 @@ export const accountTranslation =(language:LanguageType | null)=> {
     return{
         notificationsTitle: language?.id === 'en' ? 'Notifications' : language?.id === 'fr' ? 'Notifications' : 'إشعارات',
         messagesNotifications: language?.id === 'en' ? 'Messages notifications' : language?.id === 'fr' ? 'Notifications de messages' : 'إشعارات الرسائل',
-        debtsNotifications: language?.id === 'en' ? 'Debts notifications' : language?.id === 'fr' ? 'Notifications de crédits' : 'إشعارات الديون',
+        debtsNotifications: language?.id === 'en' ? 'Debts and payments notifications' : language?.id === 'fr' ? 'Notifications de crédits et de paiements' : 'إشعارات الديون الدفعات',
         publicationsNotifications: language?.id === 'en' ? 'Publications notifications' : language?.id === 'fr' ? 'Notifications de publications' : 'إشعارات المنشورات',
       };
     

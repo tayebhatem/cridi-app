@@ -1,6 +1,6 @@
 import { View, Text,TextInput, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
-import { Ionicons, MaterialIcons,Entypo,Feather } from '@expo/vector-icons'
+import {Feather } from '@expo/vector-icons'
 
 const Input = ({title,placeholder,type,value,error,onChange}:{title:string,placeholder:string,type:'text'|'email'|'password'|'number'|'phone',value:string | undefined,error:string,onChange:(text:string)=>void}) => {
   
@@ -8,9 +8,9 @@ const Input = ({title,placeholder,type,value,error,onChange}:{title:string,place
   
   return (
     <View className='space-y-2'>
-      <Text className={`text-lg font-medium ${error && 'text-red-500'}`}>{title}</Text>
-     <View className={`w-full flex flex-row items-center   bg-gray-100 border rounded-md p-3 focus:border-primary-500 border-gray-200 ${error && 'border-red-500'}`}>
-      <View className='flex flex-row items-center flex-1 '>
+      <Text className={`text-base font-kufi leading-9 text-black dark:text-white ${error && 'text-red-500'}`}>{title}</Text>
+     <View className={`w-full flex flex-row items-center   bg-neutral-100 dark:bg-dark-300 border  rounded-md p-3 focus:border-primary-500 border-neutral-200 dark:border-dark-200 ${error && 'border-red-500'}`}>
+      <View className='flex flex-row items-center flex-1 space-x-2 '>
       <Feather 
        name={
         type==='text'?'user'
@@ -18,11 +18,11 @@ const Input = ({title,placeholder,type,value,error,onChange}:{title:string,place
         :type==='phone'?'phone'
         :'mail'}
        size={24} 
-       className='text-gray-200 ' 
+       className=' ' 
        color={'#A3A3A3'}
        /> 
      <TextInput 
-      className='w-full px-2'
+      className='flex-1 text-black dark:text-white font-kufi'
       secureTextEntry={!show && type==='password'} 
       placeholder={placeholder}
       defaultValue={value}

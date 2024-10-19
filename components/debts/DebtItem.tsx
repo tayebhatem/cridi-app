@@ -2,12 +2,14 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import { DebtsType } from '@/types'
 import { Ionicons } from '@expo/vector-icons'
+import useLanguageStore from '@/stores/useLanguageStore'
 
 const DebtItem = ({debt}:{debt:DebtsType}) => {
+  const{language}=useLanguageStore()
   return (
     <View key={debt.id} className='flex flex-row justify-between my-2 '>
     <View className='space-y-2'>
-    <Text className='text-xl font-normal'>{debt.amount}.00 DA</Text>
+    <Text className='text-xl font-normal text-black dark:text-white'>{debt.amount}.00 DA</Text>
    <View className='flex flex-row items-center space-x-2'>
   
    <View className='flex flex-row items-center space-x-2' >
@@ -22,8 +24,10 @@ const DebtItem = ({debt}:{debt:DebtsType}) => {
    
    </View>
     </View>
-    <Text className={`rounded-md p-2 self-start font-medium capitalize ${debt.archived ?"bg-green-50 text-green-500":"bg-red-50 text-red-500"}`}>
-      {debt.archived ? "paid":"unpaid"}
+    <Text className={`rounded-md p-2 self-start font-kufi-medium leading-6 capitalize ${debt.archived ?"bg-green-50 text-green-500":"bg-red-50 text-red-500"}`}>
+      {debt.archived ?language?.id==='en'? "paid":language?.id==='fr'?"payé":"مدفوع":
+      language?.id==='en'? "unpaid":language?.id==='fr'?"impayé":"غير مدفوع"
+      }
     </Text>
       </View>
   )

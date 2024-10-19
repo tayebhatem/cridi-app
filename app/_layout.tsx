@@ -38,9 +38,11 @@ export default function RootLayout() {
    
       <Stack>
       <Stack.Screen name="index" options={{ headerShown: false,animation:'slide_from_right' }} />
+      
       <Stack.Screen name="auth" options={{ headerShown: false,animation:'slide_from_right'  }} />
-      <Stack.Screen name="(protected)" options={{ headerShown: false,animation:'default'  }} />
+      <Stack.Screen name="(protected)" options={{ headerShown: false,animation:'slide_from_right'  }} />
       <Stack.Screen name="stores/index" options={{ headerShown: false,animation:'slide_from_right' }} />
+      <Stack.Screen name="error/index" options={{ headerShown: false,animation:'none' }} />
       </Stack>
       </LanguageProvider>
     </ThemeProvider>

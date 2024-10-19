@@ -7,7 +7,7 @@ const PaymentItem = ({paymnet}:{paymnet:PaymentsType}) => {
   return (
     <View key={paymnet.id} className='flex flex-row justify-between my-2 '>
     <View className='space-y-2'>
-    <Text className='text-xl font-normal'>{paymnet.amount}.00 DA</Text>
+    <Text className='text-xl font-normal text-black dark:text-white'>{paymnet.amount}.00 DA</Text>
    <View className='flex flex-row items-center space-x-2'>
   
    <View className='flex flex-row items-center space-x-2' >

@@ -16,9 +16,9 @@ const Drawer = ({children,title,description,open,setOpen}:{children:ReactNode,ti
    className='flex justify-end w-full h-screen'
    >
     
-        <View className='bg-white p-4 rounded-md space-y-3 h-2/5 w-full rounded-t-xl '>
+        <View className='bg-white dark:bg-dark-400 p-4 rounded-md space-y-3 h-2/5 w-full rounded-t-xl '>
        <View className='flex flex-row items-center justify-between'>
-       <Text className='text-base font-kufi-medium '>{title}</Text>
+       <Text className='text-base font-kufi-medium text-black dark:text-white'>{title}</Text>
     <TouchableOpacity activeOpacity={0.8} onPress={()=>setOpen(false)}>
     <Entypo  name='cross' color={"#A3A3A3"} size={28}/>
     </TouchableOpacity>

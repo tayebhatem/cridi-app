@@ -1,8 +1,8 @@
 
 import { Client,  ID,Databases, Query } from 'react-native-appwrite';
 import * as SecureStore from 'expo-secure-store';
-import { AccountType } from '@/types';
-const client = new Client()
+import { AccountType, publicationType } from '@/types';
+export const client = new Client().setEndpoint("https://cloud.appwrite.io/v1")
     .setProject('669a6a36003c2cc6eecd')
     .setPlatform('com.tayebhatem.cridi');
 export const databases=new Databases(client)
@@ -12,7 +12,10 @@ export const config={
     account:'66b09b570034158307ad',
     accountUser:'66f6d4d1003bc312bdf3',
     transactions:'66a6c74f00196e1fa95b',
-    payments:'66a6c7f8003df82e5105'
+    payments:'66a6c7f8003df82e5105',
+    publications:'671070c4002b21cb9b62',
+    notifications:'671106110007cf9a44a5',
+    reports:'671105b5003c7b3bc573'
 }
 async function save(key:string, value:string) {
     await SecureStore.setItemAsync(key, value);
@@ -62,22 +65,18 @@ export const createSession=async(account:string)=>{
       }
 }
 export const getSession=async()=>{
-    try {
-        const sessionId=await SecureStore.getItemAsync('session')
+  const sessionId=await SecureStore.getItemAsync('session')
         
-        if(sessionId){
-            
-        const session=await databases.getDocument(
-            config.database,
-            config.accountSession,
-         sessionId
-        )
-     
-        return session
-        }
-    } catch (error) {
-        console.log(error)
-    }
+  if(sessionId){
+      
+  const session=await databases.getDocument(
+      config.database,
+      config.accountSession,
+   sessionId
+  )
+
+  return session
+  }
 }
 
 export const deleteSession=async()=>{
@@ -142,21 +141,72 @@ export const  getAccount=async(account:string)=>{
        
       }
 }
-export const updatePassword=async(id:string,oldPassword:string,newpassword:string)=>{
-    
-      const account=await getAccount(id)
-      if(!account) return
-      const currentPassword=account.password
-      if(currentPassword!==oldPassword) throw new Error('Current password is wrong')
+export const checkCurrentPassword=async(id:string,oldPassword:string)=>{
+  const account=await getAccount(id)
+  if(!account) return
 
+  const currentPassword=account.password
+ 
+  if(currentPassword!==oldPassword){ return false }else{return true}
+
+}
+export const updatePassword=async(id:string,newpassword:string)=>{
         const data=await databases.updateDocument(
           config.database,
           config.account,
           id,
           {
-            newpassword
+            password:newpassword
           }
         )
+       
         return data
     
+}
+
+
+export const createPublication=async()=>{
+try {
+  
+} catch (error) {
+  
+}
+}
+
+export const getPublications=async()=>{
+    const data=await databases.listDocuments(
+      config.database,
+      config.publications
+    )
+
+    const pubs=data.documents.map((item)=>{
+       const data:publicationType={
+        id:item.$id,
+        title:item.title,
+        description:item.description,
+        image:item.image
+       }
+       return data
+    })
+
+    return pubs
+}
+
+
+export const sendReport=async(message:string,account:string)=>{
+      try {
+        const data=await databases.createDocument(
+          config.database,
+          config.reports,
+          ID.unique(),
+          {
+            account,
+            message
+          }
+        )
+
+        return data
+      } catch (error) {
+        console.log(error)
+      }
 }

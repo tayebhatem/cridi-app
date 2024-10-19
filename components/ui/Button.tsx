@@ -19,9 +19,9 @@ const Button = ({title,onChange}:{title:string,onChange:()=>Promise<void>}) => {
     <TouchableOpacity 
     onPress={onSubmit}
     activeOpacity={0.9} 
-    className={`bg-primary-500 w-full my-4 rounded-full shadow-primary-500 shadow-md p-3 flex flex-row justify-center items-center ${isLoading && 'opacity-70'}`} 
+    className={`bg-primary-500 w-full my-6 rounded-md shadow-primary-500 shadow-md p-4 flex flex-row justify-center items-center ${isLoading && 'opacity-70'}`} 
     disabled={isLoading}>
-   <Text className='text-white capitalize text-lg font-medium'>
+   <Text className='text-white capitalize text-lg font-kufi-semi-bold leading-8'>
 {
     !isLoading ? title:<ActivityIndicator size={'large'} color={"#FFF"}/>
 }

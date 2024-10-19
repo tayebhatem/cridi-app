@@ -5,6 +5,7 @@ import { getPayments } from '@/actions/payments'
 import { Link } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import useLanguageStore from '@/stores/useLanguageStore'
+import CardLayout from '../ui/CardLayout'
 
 const LastPaymentsCard = ({id}:{id:string}) => {
   const [LastPayments, setLastPayments] = useState<PaymentsType[] | undefined>([])
@@ -33,8 +34,9 @@ const LastPaymentsCard = ({id}:{id:string}) => {
   {language?.id==='en'?"Read more":language?.id==='fr'?"En savoir plus":"إقرأ المزيد"}
   </Link>
 </View>
-<View className='bg-white p-4  rounded-md shadow-primary-500 shadow-md space-y-4 '>
-   {
+<View>
+<CardLayout>
+{
  LastPayments && LastPayments?.length>0 ? LastPayments.map((item)=>(
     <View key={item.id} className='flex flex-row justify-between'>
   <View className='space-y-2'>
@@ -63,6 +65,7 @@ const LastPaymentsCard = ({id}:{id:string}) => {
         </Text>
  </View>
    }
+</CardLayout>
 </View>
     </View>
   )
