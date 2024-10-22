@@ -3,6 +3,7 @@ import React from 'react'
 import useAccountStore from '@/stores/useAccountStore'
 import Avatar from '../ui/Avatar'
 import useLanguageStore from '@/stores/useLanguageStore'
+import { Link } from 'expo-router'
 
 const Header = () => {
     const {account}=useAccountStore()
@@ -19,7 +20,9 @@ const Header = () => {
       </Text>
     <Text className='text-lg text-black dark:text-white  font-kufi-semi-bold capitalize'>{account?.name}</Text>
     </View>
-    <Avatar size='Small' url={account?.avatar}/>
+   <Link href={'/account'}>
+   <Avatar size='Small' url={account?.avatar} uplaod/>
+   </Link>
     </View>
    </View>
   )

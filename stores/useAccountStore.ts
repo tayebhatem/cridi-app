@@ -5,8 +5,7 @@ interface AccountState {
     account: AccountType | null; 
     setAccount: (account: AccountType) => void; 
     clearAccount: () => void; 
-    setName: (name: string) => void; 
-    setPhone: (phone: string) => void; 
+    setAvatar: (phone: string) => void; 
   }
 
  const useAccountStore = create<AccountState>((set) => ({
@@ -15,14 +14,11 @@ interface AccountState {
       set(() => ({
         account,
       })),
-      setName: (name: string) =>
+      setAvatar: (avatar: string) =>
         set((state) => ({
-          account: state.account ? { ...state.account, name } : null,
+          account: state.account ? { ...state.account, avatar } : null,
         })),
-        setPhone: (phone: string) =>
-          set((state) => ({
-            account: state.account ? { ...state.account, phone } : null,
-          })),
+     
     clearAccount: () =>
       set(() => ({
         account: null,

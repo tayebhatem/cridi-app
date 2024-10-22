@@ -5,7 +5,10 @@ import useNotificationsStore from '@/stores/useNotificationsStore'
 import useAccountStore from '@/stores/useAccountStore'
 import { getUnreedNotificationsCount } from '@/actions/notifications'
 
+import { router } from 'expo-router'
 const NotificationProvider = ({children}:{children:ReactNode}) => {
+ 
+    
 const {
   setAdsNotification,
   setMessagesNotification,
@@ -50,6 +53,8 @@ const{account}=useAccountStore()
           }
     }
     setNotifications()
+
+    
   }, [])
   
   return (

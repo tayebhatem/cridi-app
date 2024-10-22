@@ -5,9 +5,9 @@ import { PaymentsType } from '@/types'
 
 const PaymentItem = ({paymnet}:{paymnet:PaymentsType}) => {
   return (
-    <View key={paymnet.id} className='flex flex-row justify-between my-2 '>
+    <View key={paymnet.id} className='flex flex-row justify-between py-2 border-b border-neutral-200 dark:border-dark-200 '>
     <View className='space-y-2'>
-    <Text className='text-xl font-normal text-black dark:text-white'>{paymnet.amount}.00 DA</Text>
+    <Text className='text-xl font-kufi-medium leading-8 text-black dark:text-white'>{paymnet.amount.toFixed(2)} DA</Text>
    <View className='flex flex-row items-center space-x-2'>
   
    <View className='flex flex-row items-center space-x-2' >

@@ -18,6 +18,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { TouchableOpacity } from 'react-native'
 import useNotificationsStore from '@/stores/useNotificationsStore'
+import EmptyList from '@/components/ui/EmptyList'
 const NotificationScreen = () => {
   const {language}=useLanguageStore()
    const [notifications, setNotifications] = useState<NotificationType[]>([])
@@ -84,11 +85,12 @@ const NotificationScreen = () => {
       id: notification.accountuser,
       name: 'cridi',
     });
-
+    await notifee.requestPermission();
     // Display a notification
     await notifee.displayNotification({
       title: notification.storeName,
       body:notification.type==='debt' ||  notification.type==='payment'?language?.id==='en'?`${notification.text} added by ${notification.storeName}`:language?.id==='fr'?`${notification.text} ajouté par ${notification.storeName}`:`تمت إضافة ${notification.text}  بواسطة ${notification.storeName}`:notification.text,
+      data:{type:notification.type},
       android: {
         channelId,
        largeIcon:notification.storeImage,
@@ -98,18 +100,13 @@ const NotificationScreen = () => {
         },
       },
     });
-    // add listener to user interactions on foreground notifications
-     notifee.onForegroundEvent(({ detail, type }) => {
-      // user has pressed notification
-      if (type === EventType.PRESS) {
-       const channelId = detail.notification?.data?.channel_id;
-      
-       if (channelId) {
-         router.push(`/store/${channelId}`);
-       }
-      }
-     });
+   
+     
   }
+
+
+
+
 const fetchNotifications=useCallback(async()=>{
   if(account){
    
@@ -215,15 +212,19 @@ const fetchNotifications=useCallback(async()=>{
     };
   }, [account,transactionsNotifications,adsNotifications]);
   
+
+
+
+  
   return (
-   <SafeAreaView className='h-full p-4  bg-white dark:bg-dark-500'>
-     <View className='p-2'>
+   <SafeAreaView className='h-full py-4  bg-white dark:bg-dark-500 space-y-4'>
+     <View className='px-4'>
   <Text className='text-lg font-kufi-medium text-left'>
   {language?.id==='en'?"Notifications":language?.id==='fr'?"Notifications":"الإشعارات"}
   </Text>
    </View>
    
-    <View className='flex flex-row items-center space-x-2 px-4 py-2'>
+    <View className='flex flex-row items-center space-x-2  px-4'>
      {
       filterDateData.map((item)=>(
         <TouchableOpacity 
@@ -240,21 +241,26 @@ const fetchNotifications=useCallback(async()=>{
      }
     </View>
  <FlatList 
+ className='h-full'
  refreshControl={
   <RefreshControl refreshing={isLoading}  onRefresh={fetchNotifications}/>
  }
  showsHorizontalScrollIndicator={false}
  showsVerticalScrollIndicator={false}
  data={notifications}
- 
+ contentContainerStyle={{margin:notifications.length>0?0:'auto'}}
  keyExtractor={item=>item.id}
  renderItem={(item)=>(<NotificationItem notification={item.item}/>)}
  ListEmptyComponent={()=>(
-  <CardLayout>
-    <Text className='text-neutral-400 text-center font-kufi w-full h-full  align-middle'>
-     {language?.id==='en'?"There are no notifications currently.":language?.id==='fr'?"Il n'y a aucune notification actuellement.":"لا يوجد إشعارات حاليا."}
-  </Text>
-  </CardLayout>
+<View>
+  <EmptyList 
+ subText={language?.id === 'en' 
+  ? 'You will see notifications here once they arrive.' 
+  : language?.id === 'fr' 
+  ? 'Vous verrez les notifications ici dès qu\'elles arriveront.' 
+  : 'سترى الإشعارات هنا بمجرد وصولها.'}
+title={language?.id==='en'?"There are no notifications currently.":language?.id==='fr'?"Il n'y a aucune notification actuellement.":"لا يوجد إشعارات حاليا."}/>
+</View>
  )}
 
  />

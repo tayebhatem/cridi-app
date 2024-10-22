@@ -1,13 +1,14 @@
 
-import { Client,  ID,Databases, Query } from 'react-native-appwrite';
+import { Client,  ID,Databases, Query, Storage, ImageGravity } from 'react-native-appwrite';
 import * as SecureStore from 'expo-secure-store';
 import { AccountType, publicationType } from '@/types';
-export const client = new Client().setEndpoint("https://cloud.appwrite.io/v1")
-    .setProject('669a6a36003c2cc6eecd')
+export const client = new Client()
+    .setEndpoint("https://cloud.appwrite.io/v1")
+    .setProject(process.env.EXPO_PUBLIC_APPWRITE_PROJECT || '')
     .setPlatform('com.tayebhatem.cridi');
 export const databases=new Databases(client)
 export const config={
-    database:'66a02c2c0037f2813b8f',
+    database:process.env.EXPO_PUBLIC_APPWRITE_DATABASE || '',
     accountSession:'6707a05800140d008a02',
     account:'66b09b570034158307ad',
     accountUser:'66f6d4d1003bc312bdf3',
@@ -15,8 +16,10 @@ export const config={
     payments:'66a6c7f8003df82e5105',
     publications:'671070c4002b21cb9b62',
     notifications:'671106110007cf9a44a5',
-    reports:'671105b5003c7b3bc573'
+    reports:'671105b5003c7b3bc573',
+    profileBucket:'671533c90020fd8e96c0'
 }
+export const storage=new Storage(client)
 async function save(key:string, value:string) {
     await SecureStore.setItemAsync(key, value);
   }
@@ -210,3 +213,71 @@ export const sendReport=async(message:string,account:string)=>{
         console.log(error)
       }
 }
+
+
+const updateUserAvatar = async (id:string,url: URL) => {
+  try {
+  
+    await databases.updateDocument(
+      config.database,
+      config.account,
+      id,
+      {
+        avatar: url,
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getFilePreview=async(fileId:string)=> {
+  
+
+  try {
+
+    const fileUrl = storage.getFilePreview(
+      config.profileBucket,
+      fileId,
+      2000,
+      2000,
+      "top" as ImageGravity,
+      100
+    );
+
+    if (!fileUrl) throw Error;
+
+    return fileUrl;
+  } catch (error:any) {
+    throw new Error('show file error : '+error);
+  }
+}
+
+export const uploadImage = async (file: any,id:string) => {
+  if (!file) return;
+  const { uri, mimeType, fileName } = file;
+  const response = await fetch(uri);
+  const blob = await response.blob();
+  const size = blob.size;
+  const asset = {
+    uri,
+    type: mimeType,
+    size,
+    name: fileName 
+  };
+  try {
+     
+    const file = await storage.createFile(
+      config.profileBucket,
+      ID.unique(),
+      asset
+    );
+  if (!file) throw Error;
+   const fileUrl=await getFilePreview(file.$id)
+   await updateUserAvatar(id,fileUrl)
+    return fileUrl;
+  } catch (error:any) {
+   throw new Error('create file error : '+error)
+  }
+};
+

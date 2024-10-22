@@ -14,10 +14,17 @@ import Alert from '@/components/ui/Alert'
 import useLanguageStore from '@/stores/useLanguageStore'
 import { accountTranslation } from '@/constants/translation'
 import ConfirmModal from '@/components/ui/ConfirmModal'
+import { useChatContext } from 'stream-chat-expo'
+import { Feather } from '@expo/vector-icons'
+import PhoneInput from '@/components/ui/PhoneInput'
+
+
+
 
 const AccountScreen = () => {
     const {account,setAccount}=useAccountStore();
     const router=useRouter()
+    const {client}=useChatContext()
      const [openSave, setopenSave] = useState(false)
      const [open, setopen] = useState(false)
   const [accountForm, setAccountForm] = useState({
@@ -78,6 +85,10 @@ const AccountScreen = () => {
        
             if(account){
                 const data=await updateAccount(account.id,accountForm.name.value,accountForm.phone.value)
+                if(data) client.upsertUser(
+                  { id:account.id,
+                    name:accountForm.name.value}
+                )
               if(data) {
                  setAccount(data)
                 setopenSave(true)
@@ -116,16 +127,21 @@ const AccountScreen = () => {
 <SafeAreaView className='bg-white dark:bg-dark-500 h-full p-6 space-y-4'>
 <PageHeader title={accountTranslations.accountTitle}/>
      
-     <View className=''>
+     <ScrollView className='' showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
     <View className='flex items-center '>
-    <Avatar size='Large' url={account?.avatar}/> 
-    <Text className='text-xl font-medium text-black dark:text-white'>{account?.name}</Text>
+  <View className='relative '>
+  <Avatar size='Large' url={account?.avatar} uplaod={false}/> 
+ <View className='absolute right-0 bottom-0 bg-white dark:bg-dark-400 p-1 rounded-full shadow-black shadow-md border border-neutral-200 dark:border-dark-200'>
+ <Feather name="camera" size={20} color="black" />
+ </View>
+  </View>
+    <Text className='text-2xl font-medium text-black dark:text-white'>{account?.name}</Text>
     <Text className='text-neutral-400'>{account?.username}</Text>
     </View>
      <Input 
      title={accountTranslations.nameLabel}
      type='text'
-     placeholder='Jhone doa'
+     placeholder='John Doe'
      value={accountForm.name.value}
      onChange={handleNameChange}
      error={accountForm.name.error}
@@ -133,24 +149,20 @@ const AccountScreen = () => {
       {accountForm.name.error ? (
            <Text className='text-red-500 w-full'>{accountForm.name.error}</Text>
          ) : null}
-     <Input 
-     title={accountTranslations.phoneLabel}
-     type='phone'
-     placeholder='0779674976'
-     value={accountForm.phone.value}
-     onChange={handlePhoneChange}
-     error=''
-     />
+     
+     <PhoneInput onChange={handlePhoneChange} value={accountForm.phone.value}/>
+
   
-  <View className='pt-6 flex items-center'>
+     <View className='pt-6 flex items-center'>
   <QRCode
      value={account?.username} 
      size={200}
     />
-  </View>
+      </View>
+
+   
+     </ScrollView>
      <Button onChange={async()=>setopen(true)} title={accountTranslations.saveChangeButton}/>
-     </View>
-    
 </SafeAreaView>
 <ConfirmModal
 onChange={saveChange}

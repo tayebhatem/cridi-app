@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, useColorScheme } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {  useRouter } from 'expo-router';
-import {  FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import {  FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { deleteSession } from '@/libs/appwrite';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 import PageHeader from '@/components/ui/PageHeader';
@@ -12,13 +12,14 @@ import { settingsTranslation } from '@/constants/translation';
 import useLanguageStore from '@/stores/useLanguageStore';
 import CardLayout from '@/components/ui/CardLayout';
 import { useChatContext } from 'stream-chat-expo';
-
+import {Appearance} from 'react-native';
 const SettingsScreen = () => {
   const router = useRouter();
  
   const [open, setOpen] = useState(false);
   const [openLanguage, setopenLanguage] = useState(false);
   const theme=useColorScheme()
+  
   const {client}=useChatContext()
   const { language } = useLanguageStore();
   const settings = settingsTranslation(language);
@@ -38,6 +39,13 @@ const SettingsScreen = () => {
   const toggleTheme=()=>{
 
   }
+
+  useEffect(() => {
+   Appearance.addChangeListener((listner)=>{
+    console.log(listner.colorScheme)
+   })
+  }, [])
+  
   return (
     <>
       <PageLayout>
@@ -84,11 +92,23 @@ const SettingsScreen = () => {
   </View>
   <MaterialIcons name='arrow-forward-ios' color={'#aaa'} size={24} />
 </TouchableOpacity>
-
+{
+  /*
+  <TouchableOpacity
+  onPress={() => {}}
+  activeOpacity={0.8}
+  className='flex flex-row items-center w-full pb-4 border-b border-neutral-100 dark:border-dark-300'>
+  <View className='flex flex-row items-center gap-x-3 w-full'>
+    <Ionicons name='sunny' color={'#A3A3A3'} size={24} />
+    <Text className='text-neutral-400 font-kufi-medium'>{settings.themeLabel}</Text>
+  </View>
+</TouchableOpacity>
+  */
+}
 <TouchableOpacity
   onPress={() => setopenLanguage(true)}
   activeOpacity={0.8}
-  className='flex flex-row items-center w-full'>
+  className='flex flex-row items-center w-full '>
   <View className='flex flex-row items-center gap-x-3 w-full'>
     <FontAwesome name='globe' color={'#A3A3A3'} size={24} />
     <Text className='text-neutral-400 font-kufi-medium'>{settings.languageLabel}</Text>
@@ -130,7 +150,7 @@ activeOpacity={0.8}
 onPress={() => setOpen(true)}
 className='flex flex-row items-center  space-x-2 '>
   <FontAwesome name='sign-out' color={'#ef4444'} size={24} />
-  <Text className='text-red-500 font-kufi-medium'>{settings.logout}</Text>
+  <Text className='text-red-500 font-kufi-semi-bold'>{settings.logout}</Text>
 </TouchableOpacity>
 
 </View>

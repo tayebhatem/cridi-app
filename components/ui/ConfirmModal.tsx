@@ -33,18 +33,19 @@ const ConfirmModal = (
      
    transparent
    animationType='slide'
+   statusBarTranslucent
    
    visible={open} 
    onRequestClose={()=>setOpen(!open)}
    >
    <BlurView 
-  intensity={50} tint="dark"
-   className='flex items-center justify-center w-full h-screen'
+  intensity={100} tint="dark" blurReductionFactor={1}
+   className='flex items-center justify-center w-full h-full'
    >
    
     <View className='bg-white p-4 rounded-md space-y-3 w-3/4'>
-<Text className='text-lg font-kufi-medium '>{title}</Text>
-<Text className='text-neutral-400 font-kufi'>
+<Text className='text-lg font-kufi-medium text-center '>{title}</Text>
+<Text className='text-neutral-400 font-kufi text-center leading-5'>
 {description}
 </Text>
 <View className='flex flex-row items-center justify-end gap-x-2 '>

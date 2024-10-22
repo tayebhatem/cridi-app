@@ -10,8 +10,8 @@ const TabIcon = ({ icon, color,focused, name,notification }:{icon:any,color:stri
     <View className="flex items-center justify-center gap-y-1.5 my-2">
    <View>
    {notification!==undefined && notification>0 && 
-       <View className='absolute -top-2 -right-2 w-6 h-6 text-sm justify-center items-center bg-red-500 z-50 rounded-full'>
-<Text className=' text-sm   text-center  text-white font-medium'>{notification}</Text>
+       <View className='absolute -top-2 -right-2 w-5 h-5 text-sm justify-center items-center bg-red-500 z-50 rounded-full'>
+<Text className=' text-xs   text-center  text-white font-medium'>{notification>=100?'N':notification}</Text>
        </View>
        }
     <AntDesign

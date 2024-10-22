@@ -58,7 +58,7 @@ const ConversationScreen = () => {
     </View>
  <View className='h-full w-full flex-1'>
    
-      <Channel channel={channel} audioRecordingEnabled   >
+      <Channel channel={channel}  audioRecordingEnabled  >
     <MessageList/>
     <MessageInput/>
    </Channel>

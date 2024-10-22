@@ -11,6 +11,7 @@ import { getPublications } from '@/libs/appwrite';
 const Hero = () => {
   const {language}=useLanguageStore()
   const width = Dimensions.get('window').width;
+  const [posistion, setposistion] = useState(0)
   const [publications, setpublications] = useState<publicationType[]>([])
   useEffect(() => {
      const fetchPubs=async()=>{
@@ -32,22 +33,28 @@ const Hero = () => {
   return (
     <View className=''>
         <Carousel
-          
+                style={{shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 3.84,}}
                 loop
                 width={width}
                 height={width / 2}
                 autoPlay={true}
-                autoPlayReverse
+               
+                
                 mode='parallax'
                 data={publications}
-                scrollAnimationDuration={4000}
-                onSnapToItem={(index) => {}}
+                scrollAnimationDuration={1500}
+                
+                onSnapToItem={(index) =>setposistion(index)}
+                autoPlayInterval={3000}
                 renderItem={(item) => (
                   <View
                   className={`flex h-52 flex-row rounded-md shadow-primary-500 shadow-md overflow-hidden ${item.index===0?'bg-primary-500':'bg-blue-500'} `}
                  >
                   
-                   <View className={`flex-1 p-3`}>
+                   <View className={`flex-1 p-3  justify-center`}>
                <Text className='text-xl text-center font-kufi-semi-bold text-white' numberOfLines={3}>
                 {item.item.title}
                 </Text>
@@ -63,6 +70,14 @@ const Hero = () => {
                 </View>
                 )}
             />
+           <View className='flex justify-center flex-row space-x-2 items-center'>
+           {
+              publications.map((item,index)=>(
+                <View key={item.id} className={`rounded-full ${posistion===index?'bg-primary-500  w-2 h-2':'bg-neutral-200 dark:bg-dark-200 w-1 h-1'}`}>
+                  </View>
+              ))
+            }
+           </View>
     <View>
       
     </View>

@@ -6,9 +6,10 @@ import { Link } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import useLanguageStore from '@/stores/useLanguageStore'
 import CardLayout from '../ui/CardLayout'
+import PaymentItem from './PaymentItem'
 
 const LastPaymentsCard = ({id}:{id:string}) => {
-  const [LastPayments, setLastPayments] = useState<PaymentsType[] | undefined>([])
+  const [lastPayments, setLastPayments] = useState<PaymentsType[] | undefined>([])
   const {language}=useLanguageStore()
   useEffect(() => {
       const fetchLastDebts=async()=>{
@@ -27,7 +28,7 @@ const LastPaymentsCard = ({id}:{id:string}) => {
   return (
     <View className='space-y-2'>
      <View className='flex flex-row items-center justify-between'>
-  <Text className='font-kufi-medium  '>
+  <Text className='text-lg font-kufi-medium  text-black dark:text-white '>
     {language?.id==='en'?"Last payments":language?.id==='fr'?"Derniers paiements":"الدفعات الأخيرة"}
   </Text>
   <Link href={`../payments/${id}`} className='capitalize text-primary-500 font-kufi-medium '>
@@ -37,27 +38,8 @@ const LastPaymentsCard = ({id}:{id:string}) => {
 <View>
 <CardLayout>
 {
- LastPayments && LastPayments?.length>0 ? LastPayments.map((item)=>(
-    <View key={item.id} className='flex flex-row justify-between'>
-  <View className='space-y-2'>
-  <Text className='text-xl font-normal'>{item.amount}.00 DA</Text>
- <View className='flex flex-row items-center space-x-2'>
-
- <View className='flex flex-row items-center space-x-2' >
-<Ionicons name='calendar-clear-outline' color={'#a3a3a3'} size={14}/>
- <Text className='text-neutral-400'>{item.date}</Text>
- </View>
-
- <View className='flex flex-row items-center space-x-2' >
- <Ionicons name='time-outline' color={'#a3a3a3'} size={14}/>
- <Text className='text-neutral-400'>{item.time}</Text>
- </View>
- 
- </View>
-
-  </View>
- 
-    </View>
+ lastPayments && lastPayments?.length>0 ? lastPayments.map((item)=>(
+    <PaymentItem key={item.id} paymnet={item}/>
   )):
  <View >
   <Text className='text-neutral-400  text-center  align-middle font-kufi'>

@@ -44,7 +44,7 @@ if (getRNMinorVersion() >= 75) {
   }
 }
 
-rootProject.name = 'cridi'
+rootProject.name = 'Cridi'
 
 dependencyResolutionManagement {
   versionCatalogs {

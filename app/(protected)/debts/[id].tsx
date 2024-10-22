@@ -12,6 +12,8 @@ import DebtItem from '@/components/debts/DebtItem'
 import CardLayout from '@/components/ui/CardLayout'
 import {format, formatDate} from 'date-fns'
 import TotaleCard from '@/components/debts/TotaleCard'
+import EmptyList from '@/components/ui/EmptyList'
+import { markAllasRead } from '@/actions/notifications'
 const DebtsScreen = () => {
   const {id}=useLocalSearchParams();
   
@@ -40,6 +42,14 @@ const DebtsScreen = () => {
       {
         id:3,
         name:{
+          en:'2 Weeks',
+          fr:'2 Semains',
+          ar:'أسبوعين'
+        }
+      },
+      {
+        id:4,
+        name:{
           en:'Month',
           fr:'Mois',
           ar:'شهر'
@@ -47,7 +57,7 @@ const DebtsScreen = () => {
       },
     ]
     const totalDebts=useMemo(()=>{
-      const total=debts?.reduce((total,item)=>{
+      const total=debts?.filter(item=>item.archived===false).reduce((total,item)=>{
         return total+item.amount
         },0)
 
@@ -59,6 +69,7 @@ const DebtsScreen = () => {
         const data=await getDebsts(id as string,80)
         setDebts(data)
         setData(data)
+        setRange(1)
       } catch (error) {
         
       }finally{
@@ -80,23 +91,41 @@ const DebtsScreen = () => {
       }else if(range===2){
         const newDate=new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000)
         const date =formatDate(newDate, "yyyy-MM-dd");
-       const filterData=data?.filter(item=>item.date<date)
+       const filterData=data?.filter(item=>item.date>date)
+       setDebts(filterData)
+      }else if(range===3) {
+        const twoWeeksAgo = new Date(currentDate.setDate(currentDate.getDate() - 14));
+        const date =formatDate(twoWeeksAgo, "yyyy-MM-dd");
+       const filterData=data?.filter(item=>item.date>date)
        setDebts(filterData)
       }else {
         const oneMonthAgo = new Date(currentDate);
         oneMonthAgo.setMonth(currentDate.getMonth() - 1);
         const date =formatDate(oneMonthAgo, "yyyy-MM-dd");
-        const filterData=data?.filter(item=>item.date<date)
+        const filterData=data?.filter(item=>item.date>date)
         setDebts(filterData)
       }
     }
+useEffect(() => {
+  const updateUnreadDebts=async()=>{
+     try {
+      await markAllasRead(id as string,'debt')
+
+     } catch (error) {
+      
+     }
+  }
+  updateUnreadDebts()
+}, [])
 
   return (
     <PageLayout>
         <PageHeader title={language?.id==='en'?"Debts":language?.id==='fr'?"Crédits":"الديون"}/>
-   <TotaleCard total={totalDebts} subText={language?.id==='en'?"Total debts":language?.id==='fr'?"Crédits totales":"إجمالي الديون"}/>
+  <View>
+  <TotaleCard total={totalDebts} subText={language?.id==='en'?"Total debts":language?.id==='fr'?"Crédits totales":"إجمالي الديون"}/>
+  </View>
    <View className='space-y-4'>
-    <View className='flex flex-row items-center space-x-2'>
+    <View className='flex flex-row items-center'>
      {
       filterDateData.map((item)=>(
         <TouchableOpacity 
@@ -114,19 +143,33 @@ const DebtsScreen = () => {
   <View className=''>
   <CardLayout>
    <FlatList
-   className='h-[90%]'
+  
    showsVerticalScrollIndicator={false}
    data={debts}
    keyExtractor={item=>item.id}
+  className='h-[90%]'
    renderItem={(item)=><DebtItem debt={item.item}/>}
-  
+   contentContainerStyle={{marginVertical:debts && debts?.length===0?'auto':0}}
    refreshControl={
     <RefreshControl refreshing={isLoading} onRefresh={fetchDebts}/>
    }
    ListEmptyComponent={()=>(
-    <Text className='text-neutral-400 text-center font-kufi w-full h-full  align-middle'>
-       {language?.id==='en'?"No debts are found.":language?.id==='fr'?"Aucune crédits n'est trouvée.":"لم يتم العثور على ديون."}
-    </Text>
+    <EmptyList
+    title={
+      language?.id === 'en'
+        ? "There is no debt currently"
+        : language?.id === 'fr'
+        ? "Il n'y a pas de dette actuellement"
+        : "لا يوجد ديون حاليا"
+    }
+    subText={
+      language?.id === 'en'
+        ? "You have no outstanding debts at the moment."
+        : language?.id === 'fr'
+        ? "Aucune dette en cours pour le moment."
+        : "لا توجد ديون مستحقة في الوقت الحالي."
+    }
+  />
    )}
    />
    </CardLayout>

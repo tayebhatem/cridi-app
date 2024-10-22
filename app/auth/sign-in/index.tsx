@@ -54,12 +54,12 @@ const SignInScreen = () => {
     let valid = true;
 
     // Validate username
-    if (loginForm.username.value.trim().length < 3) {
+    if (loginForm.username.value.trim().length < 6) {
       setLoginForm((prevState) => ({
         ...prevState,
         username: {
           ...prevState.username,
-          error: language?.id === 'en' ? 'Username must be at least 3 characters long' : language?.id === 'fr' ? 'Le nom d\'utilisateur doit comporter au moins 3 caractères' : 'يجب أن يتكون اسم المستخدم من 3 أحرف على الأقل',
+          error: language?.id === 'en' ? 'Username must be at least 6 characters long' : language?.id === 'fr' ? 'Le nom d\'utilisateur doit comporter au moins 6 caractères' : 'يجب أن يتكون إسم المستخدم من 6 أحرف على الأقل',
         },
       }));
       valid = false;
@@ -71,7 +71,7 @@ const SignInScreen = () => {
         ...prevState,
         password: {
           ...prevState.password,
-          error: language?.id === 'en' ? 'Password must be at least 6 characters long' : language?.id === 'fr' ? 'Le mot de passe doit comporter au moins 6 caractères' : 'يجب أن يتكون كلمة المرور من 6 أحرف على الأقل',
+          error: language?.id === 'en' ? 'Password must be at least 6 characters long' : language?.id === 'fr' ? 'Le mot de passe doit comporter au moins 6 caractères' : 'يجب أن تتكون كلمة المرور من 6 أحرف على الأقل',
         },
       }));
       valid = false;
@@ -137,7 +137,7 @@ const SignInScreen = () => {
           <Input
             title={language?.id === 'en' ? 'Username' : language?.id === 'fr' ? 'Nom d\'utilisateur' : 'إسم المستخدم'}
             type="text"
-            placeholder={language?.id === 'en' ? 'jhondoa' : language?.id === 'fr' ? 'jhondoa' : 'jhondoa'}
+            placeholder='johndoe'
             value={loginForm.username.value}
             error={loginForm.username.error}
             onChange={handleUsernameChange} 

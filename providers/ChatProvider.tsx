@@ -14,7 +14,7 @@ const ChatProvider = ({children}:{children:ReactNode}) => {
     const {account}=useAccountStore()
     const [isConnected, setIsConnected] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
-    const client = StreamChat.getInstance(process.env.EXPO_PUBLIC_STREAM_KEY || '');
+    const client = StreamChat.getInstance('vyszrwyhp2v3');
     const{setUnreadMessagesCount}=useNotificationsStore()
     useEffect(() => { 
      const connect=async()=>{
@@ -71,6 +71,7 @@ const ChatProvider = ({children}:{children:ReactNode}) => {
       
         
         }
+        
       }, [isConnected, client]);
    
     
@@ -85,8 +86,8 @@ streami18n.setLanguage('fr');
     if(isLoading) return <Loader/>
   return (
    <>
-   <OverlayProvider value={{style:{colors:{accent_blue:'#059669'}}}} i18nInstance={streami18n}>
-   <Chat client={client} i18nInstance={streami18n}>
+   <OverlayProvider value={{style:{colors:{accent_blue:'#059669'}}}} i18nInstance={streami18n} >
+   <Chat client={client} i18nInstance={streami18n}  >
    {children}
    </Chat>
   

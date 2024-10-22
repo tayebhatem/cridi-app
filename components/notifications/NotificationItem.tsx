@@ -27,12 +27,12 @@ const NotificationItem = ({notification}:{notification:NotificationType}) => {
 
   return (
     <TouchableOpacity
-    className={`flex flex-row py-3 px-4 border-b border-b-neutral-200 dark:border-dark-200  overflow-hidden  gap-x-2  items-start  ${!notification.read && 'bg-neutral-100'}`}
+    className={`flex flex-row p-4 border-b border-b-neutral-200 dark:border-dark-200  overflow-hidden  gap-x-2  items-start  ${!notification.read && 'bg-neutral-100'}`}
       activeOpacity={0.8} 
       onPress={navigate}>
    
 
-<Avatar size='Small' url={notification.storeImage}/>
+<Avatar size='Small' url={notification.storeImage} uplaod/>
 
 <View className='space-y-2   flex-1'>
 <View className='flex flex-row items-center justify-between space-x-8 '>

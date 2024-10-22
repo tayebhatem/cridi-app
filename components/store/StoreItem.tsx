@@ -15,7 +15,7 @@ const StoreItem = ({store}:{store:AccountUserType}) => {
     <TouchableOpacity activeOpacity={0.8} onPress={()=> router.push(`../store/${store.id}`)} className=''>
    <CardLayout>
    <View className='flex items-center'>
-     <Avatar size='Medium' url={store.store.avatar}/>
+     <Avatar size='Medium' url={store.store.avatar} uplaod/>
     <View>
     <Text className='font-medium text-base text-black dark:text-white text-center'>{store.store.name}</Text>
     <Text className='text-neutral-400 text-center text-sm'>{store.store.adress}</Text>

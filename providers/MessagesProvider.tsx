@@ -23,7 +23,7 @@ const requestPermission = async () => {
 
 
 export default function MessagesProvider({children}:{children:ReactNode}) {
-  const client = StreamChat.getInstance(process.env.EXPO_PUBLIC_STREAM_KEY || '');
+  const client = StreamChat.getInstance('vyszrwyhp2v3');
   const [isReady, setIsReady] = useState(false);
   const unsubscribeTokenRefreshListenerRef = useRef<() => void>();
   const {account}=useAccountStore()
@@ -101,7 +101,7 @@ export default function MessagesProvider({children}:{children:ReactNode}) {
         id: 'chat-messages',
         name: 'Chat Messages',
       });
-    
+      await notifee.requestPermission();
       // display the notification
       const { stream, ...rest } = remoteMessage.data ?? {};
       const data = {
@@ -125,19 +125,22 @@ export default function MessagesProvider({children}:{children:ReactNode}) {
     });
     
   }, [messagesNotification])
+
+
   useEffect(() => {
+    
     // add listener to notifications received when on foreground
     const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
       if(!remoteMessage.data || !messagesNotification) return
       const messageId=remoteMessage.data.id as string
       const message = await client.getMessage(messageId);
-  
+        
       // create the android channel to send the notification to
       const channelId = await notifee.createChannel({
         id: 'chat-messages',
         name: 'Chat Messages',
       });
-  
+    await notifee.requestPermission();
       // display the notification
       const { stream, ...rest } = remoteMessage.data ?? {};
       const data = {
@@ -159,23 +162,10 @@ export default function MessagesProvider({children}:{children:ReactNode}) {
         },
       });
     });
-  
-    // add listener to user interactions on foreground notifications
-    const unsubscribeForegroundEvent = notifee.onForegroundEvent(({ detail, type }) => {
-     // user has pressed notification
-     if (type === EventType.PRESS) {
-      const channelId = detail.notification?.data?.channel_id;
-     
-      if (channelId) {
-        router.push(`/conversation/${channelId}`);
-      }
-     }
-    });
+ 
   
     return () => {
       unsubscribeOnMessage();
-      unsubscribeForegroundEvent();
-
     };
   }, [messagesNotification]);
 

@@ -33,7 +33,7 @@ fetchStore()
     <View className='flex flex-row items-center justify-between'>
    
   <View className='flex flex-row items-center gap-x-2 '>
-  <Avatar size='Small' url={store?.avatar}/>
+  <Avatar size='Small' url={store?.avatar} uplaod/>
     <View>
       <Text className='text-lg font-medium text-black dark:text-white'>{store?.name}</Text>
       <Text className='text-neutral-500'>{store?.adress}</Text>  

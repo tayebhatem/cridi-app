@@ -7,6 +7,7 @@ export const settingsTranslation =(language:LanguageType | null)=>{
         password: language?.id === 'en' ? 'Password' : language?.id === 'fr' ? 'Mot de passe' : 'كلمة المرور',
         notifications: language?.id === 'en' ? 'Notifications' : language?.id === 'fr' ? 'Notifications' : 'الإشعارات',
         languageLabel: language?.id === 'en' ? 'Language' : language?.id === 'fr' ? 'Langue' : 'اللغة',
+        themeLabel: language?.id === 'en' ? 'Dark mode' : language?.id === 'fr' ? 'Mode sombre' : 'الوضع الليلي',
         report: language?.id === 'en' ? 'Report' : language?.id === 'fr' ? 'Signaler' : 'التقرير',
         faq: language?.id === 'en' ? 'FAQ' : language?.id === 'fr' ? 'FAQ' : 'الأسئلة الشائعة',
         logout: language?.id === 'en' ? 'Logout' : language?.id === 'fr' ? 'Se déconnecter' : 'تسجيل الخروج',
@@ -20,7 +21,7 @@ export const accountTranslation =(language:LanguageType | null)=> {
         accountTitle: language?.id === 'en' ? 'Account' : language?.id === 'fr' ? 'Compte' : 'الحساب',
         nameLabel: language?.id === 'en' ? 'Name' : language?.id === 'fr' ? 'Nom' : 'الاسم',
         phoneLabel: language?.id === 'en' ? 'Phone' : language?.id === 'fr' ? 'Téléphone' : 'الهاتف',
-        saveChangeButton: language?.id === 'en' ? 'Save change' : language?.id === 'fr' ? 'Sauvegarder' : 'حفظ التغييرات',
+        saveChangeButton: language?.id === 'en' ? 'Save' : language?.id === 'fr' ? 'Sauvegarder' : 'حفظ',
         nameRequired: language?.id === 'en' ? 'Name is required.' : language?.id === 'fr' ? 'Le nom est requis.' : 'الاسم مطلوب.',
         backNowTitle: language?.id === 'en' ? 'Back Now' : language?.id === 'fr' ? 'Retour maintenant' : 'العودة الآن',
         successMessage: language?.id === 'en' ? 'Your account has been saved successfully.' : language?.id === 'fr' ? 'Votre compte a été enregistré avec succès.' : 'تم حفظ حسابك بنجاح.',
@@ -33,8 +34,8 @@ export const accountTranslation =(language:LanguageType | null)=> {
     currentPassword: language?.id === 'en' ? 'Current Password' : language?.id === 'fr' ? 'Mot de passe actuel' : 'كلمة المرور الحالية',
     newPassword: language?.id === 'en' ? 'New Password' : language?.id === 'fr' ? 'Nouveau mot de passe' : 'كلمة المرور الجديدة',
     confirmPassword: language?.id === 'en' ? 'Confirm Password' : language?.id === 'fr' ? 'Confirmer le mot de passe' : 'تأكيد كلمة المرور',
-    saveChangeButton: language?.id === 'en' ? 'Save Change' : language?.id === 'fr' ? 'Sauvegarder' : 'حفظ التغييرات',
-    passwordTooShort: language?.id === 'en' ? 'Password must be at least 6 characters long' : language?.id === 'fr' ? 'Le mot de passe doit comporter au moins 6 caractères' : 'يجب أن تكون كلمة المرور 6 أحرف على الأقل',
+    saveChangeButton: language?.id === 'en' ? 'Save' : language?.id === 'fr' ? 'Sauvegarder' : 'حفظ',
+    passwordTooShort: language?.id === 'en' ? 'Password must be at least 6 characters long' : language?.id === 'fr' ? 'Le mot de passe doit comporter au moins 6 caractères' : 'يجب أن تتكون كلمة المرور 6 أحرف على الأقل',
     passwordMismatch: language?.id === 'en' ? 'Password does not match' : language?.id === 'fr' ? 'Le mot de passe ne correspond pas' : 'كلمة المرور غير متطابقة',
     wrongCurrentPassword: language?.id === 'en' ? 'Current password is wrong' : language?.id === 'fr' ? 'Le mot de passe actuel est incorrect' : 'كلمة المرور الحالية خاطئة',
     backToSettings: language?.id === 'en' ? 'Back to settings' : language?.id === 'fr' ? 'Retour aux paramètres' : 'العودة إلى الإعدادات',
@@ -46,7 +47,7 @@ export const accountTranslation =(language:LanguageType | null)=> {
     return{
         notificationsTitle: language?.id === 'en' ? 'Notifications' : language?.id === 'fr' ? 'Notifications' : 'إشعارات',
         messagesNotifications: language?.id === 'en' ? 'Messages notifications' : language?.id === 'fr' ? 'Notifications de messages' : 'إشعارات الرسائل',
-        debtsNotifications: language?.id === 'en' ? 'Debts and payments notifications' : language?.id === 'fr' ? 'Notifications de crédits et de paiements' : 'إشعارات الديون الدفعات',
+        debtsNotifications: language?.id === 'en' ? 'Transactions notifications' : language?.id === 'fr' ? 'Notifications de transactions' : 'إشعارات المعاملات',
         publicationsNotifications: language?.id === 'en' ? 'Publications notifications' : language?.id === 'fr' ? 'Notifications de publications' : 'إشعارات المنشورات',
       };
     

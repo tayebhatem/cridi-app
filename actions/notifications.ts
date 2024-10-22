@@ -82,3 +82,36 @@ export const markAsRead=async(id:string)=>{
         console.log(error)
     }
 }
+
+export const markAllasRead=async(accountUser:string,type:'debt'|'payment')=>{
+      try {
+        const data=await databases.listDocuments(
+            config.database,
+            config.notifications,
+            [
+                Query.orderAsc('$createdAt'),
+               Query.and(
+              [  
+                Query.equal('accountUser',accountUser),
+                Query.equal('read',false),
+                Query.equal('type',type)
+            ]
+               )
+
+            ]
+        )
+       data.documents.map(async(item)=>{
+           await databases.updateDocument(
+            config.database,
+            config.notifications,
+            item.$id,
+            {
+                read:true
+            }
+           )
+       })
+
+      } catch (error) {
+        
+      }
+}
