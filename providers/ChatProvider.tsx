@@ -7,6 +7,8 @@ import Loader from '@/components/ui/Loader';
 import useLanguageStore from '@/stores/useLanguageStore';
 import useNotificationsStore from '@/stores/useNotificationsStore';
 
+const key=process.env.EXPO_PUBLIC_STREAM_KEY || ''
+
 
 const ChatProvider = ({children}:{children:ReactNode}) => {
     const{language}=useLanguageStore()
@@ -14,7 +16,7 @@ const ChatProvider = ({children}:{children:ReactNode}) => {
     const {account}=useAccountStore()
     const [isConnected, setIsConnected] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
-    const client = StreamChat.getInstance('vyszrwyhp2v3');
+    const client = StreamChat.getInstance(key);
     const{setUnreadMessagesCount}=useNotificationsStore()
     useEffect(() => { 
      const connect=async()=>{

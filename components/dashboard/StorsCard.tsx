@@ -1,13 +1,13 @@
 import { View, Text } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { AccountUserType } from '@/types'
+import { StoreType } from '@/types'
 import { getAccountStores } from '@/actions/store'
 import useAccountStore from '@/stores/useAccountStore'
 import StoreItem from '../store/StoreItem'
 
 
 const StorsCard = () => {
-    const [stors, setStors] = useState<AccountUserType[] | undefined>([])
+    const [stors, setStors] = useState<StoreType[] | undefined>([])
     const {account}=useAccountStore()
     useEffect(() => {
      const fetchStors=async()=>{

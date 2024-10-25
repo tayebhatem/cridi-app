@@ -11,13 +11,16 @@ const SessionProvider = ({ children }:{children:ReactNode}) => {
     const {setAccount}=useAccountStore()
   useEffect(() => {
     if(session){
+      
        setAccount({
         id:session.account.$id,
         name:session.account.name,
         username:session.account.username,
+        email:session.account.email,
         type:session.account.type,
         avatar:session.account.avatar,
-        phone:session.account.phone
+        phone:session.account.phone,
+        verified:session.account.verified
        })
 
     }
@@ -26,6 +29,16 @@ const SessionProvider = ({ children }:{children:ReactNode}) => {
   if(isLoading) return <Loader/>
   if (!session) {
     return <Redirect href={"../auth/sign-in"} />;
+  }else{
+    if(!session.account.email){
+      return <Redirect href={"../../auth/send-account-otp"} />;
+    }else if(!session.account.verified) {
+    
+      return <Redirect href={"../../auth/verify-account"} />;
+   }else if(session.account.type==='NONE') {
+     return <Redirect href={"../../user-type"} />;
+  }
+ 
   }
   return (
    <>

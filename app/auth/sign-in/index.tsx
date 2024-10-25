@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
-import { useRouter } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { login } from '@/libs/appwrite';
 import Alert from '@/components/ui/Alert';
 import useLanguageStore from '@/stores/useLanguageStore';
@@ -161,6 +161,15 @@ const SignInScreen = () => {
           ) : null}
 
           <Button title={language?.id === 'en' ? 'Login' : language?.id === 'fr' ? 'Connexion' : 'تسجيل الدخول'} onChange={handleSubmit} />
+          <View className='flex flex-row items-center space-x-2 justify-center'>
+  <Text className='font-kufi-medium text-center text-base'>
+    {language?.id === 'en' ? "Don't have an account?" : language?.id === 'fr' ? "Vous n'avez pas de compte ?" : "ليس لديك حساب؟"}
+  </Text>
+  <Link href={'../sign-up'} className='font-kufi-semi-bold text-primary-500 text-base'>
+    {language?.id === 'en' ? 'Register' : language?.id === 'fr' ? "S'inscrire" : 'إنشاء حساب'}
+  </Link>
+</View>
+
         </View>
       </SafeAreaView>
 

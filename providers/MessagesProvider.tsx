@@ -5,9 +5,9 @@ import messaging from '@react-native-firebase/messaging'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StreamChat } from 'stream-chat';
 import notifee, { EventType } from '@notifee/react-native';
-import { useNavigationContainerRef } from '@react-navigation/native';
-import { router } from 'expo-router';
 import useNotificationsStore from '@/stores/useNotificationsStore';
+
+const key=process.env.EXPO_PUBLIC_STREAM_KEY || ''
 
 const requestPermission = async () => {
 
@@ -23,7 +23,7 @@ const requestPermission = async () => {
 
 
 export default function MessagesProvider({children}:{children:ReactNode}) {
-  const client = StreamChat.getInstance('vyszrwyhp2v3');
+  const client = StreamChat.getInstance(key);
   const [isReady, setIsReady] = useState(false);
   const unsubscribeTokenRefreshListenerRef = useRef<() => void>();
   const {account}=useAccountStore()

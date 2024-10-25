@@ -1,43 +1,48 @@
-import { View, ScrollView } from 'react-native'
-import React from 'react'
+
+import React, { useEffect, useState } from 'react'
 import {  useLocalSearchParams, useRouter } from 'expo-router'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import LastDebtsCard from '@/components/debts/LastDebtsCard'
-import StoreHeader from '@/components/store/StoreHeader'
-import StoreHero from '@/components/store/StoreHero'
-import LastPaymentsCard from '@/components/payments/LastPaymentsCard'
-import PageLayout from '@/components/ui/PageLayout'
-import StoreNavigations from '@/components/store/StoreNavigations'
+import useAccountStore from '@/stores/useAccountStore';
+import { AccountUserType } from '@/types';
+import { getAccountStore, getAccountStores } from '@/actions/store';
+import Loader from '@/components/ui/Loader';
+import StoreDetails from '@/components/store/StoreDetails';
+import StoreProfile from '@/components/store/StoreProfile';
 
 
 const StoreScreen = () => {
   const {id}=useLocalSearchParams();
+  const {account}=useAccountStore()
+  const [accountStore, setaccountStore] = useState<AccountUserType | undefined>()
+  const [isLoading, setIsLoading] = useState(true)
+useEffect(() => {
+  if(account && id){
+    const fetchStoreAccount=async()=>{
+      
+      try {
+        const data=await getAccountStore(account.id,id as string)
+        setaccountStore(data)
+      } catch (error) {
+        console.log(error)
+      }finally{
+        setIsLoading(false)
+      }
+    
+   
+    }
+    fetchStoreAccount()
+  }
+ 
+}, [])
+if(isLoading){
+  return <Loader/>
+}else{
+  if(accountStore && accountStore.accepted){
+     return <StoreDetails id={accountStore.id}/>
+  }else{
+    return <StoreProfile id={id as string}/>
+  }
+}
   
-  return (
-  
-<PageLayout>
-<StoreHeader id={id as string}/>
-
-<ScrollView 
-className='space-y-4' 
-showsHorizontalScrollIndicator={false} 
-showsVerticalScrollIndicator={false}
->
-
-<StoreHero id={id as string}/>
-<View>
-   <StoreNavigations id={id as string}/>
-   </View>
-<View>
-<LastDebtsCard id={id as string}/>
-</View>
-
-<View>
- <LastPaymentsCard id={id as string}/>
-</View>
-</ScrollView>
-</PageLayout>
-  )
 }
 
 export default StoreScreen

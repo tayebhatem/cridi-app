@@ -1,26 +1,24 @@
 import { View, Text, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import PageLayout from '@/components/ui/PageLayout'
 import PageHeader from '@/components/ui/PageHeader'
 import useLanguageStore from '@/stores/useLanguageStore'
 import useAccountStore from '@/stores/useAccountStore'
-import { AccountUserType } from '@/types'
-import { getAccountStores } from '@/actions/store'
+import { AccountUserType, StoreType } from '@/types'
+import { getStores } from '@/actions/store'
 import StoreItem from '@/components/store/StoreItem'
-import Input from '@/components/ui/Input'
 import SearchInput from '@/components/ui/SearchInput'
 
 const StoresScreen = () => {
   const {language}=useLanguageStore()
-  const [stors, setStors] = useState<AccountUserType[]>([])
-  const [data, setData] = useState<AccountUserType[]>([])
+  const [stors, setStors] = useState<StoreType[]>([])
+  const [data, setData] = useState<StoreType[]>([])
   const {account}=useAccountStore()
   useEffect(() => {
    const fetchStors=async()=>{
        if(account){
           try {
-              const data=await getAccountStores(account.id,25)
+              const data=await getStores()
                if(!data) return
               setStors(data)
               setData(data)
@@ -37,7 +35,7 @@ const StoresScreen = () => {
 setStors(data)
    }else{
     const filterData = data.filter((item) => 
-      item.store.name.toLocaleLowerCase().includes(text.toLocaleLowerCase())
+      item.name.toLocaleLowerCase().includes(text.toLocaleLowerCase())
     );
     setStors(filterData);
    } // Update filtered data

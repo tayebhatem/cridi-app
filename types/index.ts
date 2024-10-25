@@ -4,9 +4,11 @@ export interface AccountType{
     id:string;
     name:string;
     username:string;
+    email:string;
     phone:string;
     avatar:string;
-    type:'CLIENT'| 'SUPLIER'
+    type:'CLIENT'| 'SUPLIER' | 'NONE',
+    verified:boolean
 }
 export interface StoreType{
     id:string;
@@ -16,8 +18,10 @@ export interface StoreType{
     adress:string;
 
 }
+
 export interface AccountUserType{
   id:string;
+  accepted:boolean;
   store:StoreType;
 
 }

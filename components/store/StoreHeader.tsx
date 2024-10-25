@@ -1,7 +1,7 @@
 import { View, Text, Image, TouchableOpacity, useColorScheme } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons'
-import { getStore } from '@/actions/store'
+import {  getStoreByAccount } from '@/actions/store'
 import { useRouter } from 'expo-router'
 import { StoreType } from '@/types'
 import Avatar from '../ui/Avatar'
@@ -18,7 +18,7 @@ const theme=useColorScheme()
     const fetchStore=async()=>{
       if(id){
        try {
-         const data=await getStore(id as string)
+         const data=await getStoreByAccount(id as string)
          if(!data) return
          setStore(data)
        } catch (error) {

@@ -20,7 +20,7 @@ const Input = ({title,placeholder,type,value,error,onChange}:{title:string,place
      }
       size={24} 
       className=' ' 
-      color={'#A3A3A3'}
+      color={error?'#ef4444':'#A3A3A3'}
       /> 
      </View>
      <TextInput 
@@ -29,8 +29,8 @@ const Input = ({title,placeholder,type,value,error,onChange}:{title:string,place
       placeholder={placeholder}
       defaultValue={value}
       onChangeText={(text)=>onChange(text)}
-     
-      keyboardType={type==='email'?'email-address':type==='password'?'visible-password':type==='number'?'numeric':'default'}
+      
+      keyboardType={type==='email'?'email-address':type==='number'?'numeric':'default'}
      />
       </View>
     {
