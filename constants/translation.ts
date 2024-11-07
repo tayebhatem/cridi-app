@@ -49,6 +49,7 @@ export const accountTranslation =(language:LanguageType | null)=> {
         messagesNotifications: language?.id === 'en' ? 'Messages notifications' : language?.id === 'fr' ? 'Notifications de messages' : 'إشعارات الرسائل',
         debtsNotifications: language?.id === 'en' ? 'Transactions notifications' : language?.id === 'fr' ? 'Notifications de transactions' : 'إشعارات المعاملات',
         publicationsNotifications: language?.id === 'en' ? 'Publications notifications' : language?.id === 'fr' ? 'Notifications de publications' : 'إشعارات المنشورات',
+        requestsNotifications: language?.id === 'en' ? 'Requests notifications' : language?.id === 'fr' ? 'Notifications de Demandes' : 'إشعارات الطلبات',
       };
     
  };

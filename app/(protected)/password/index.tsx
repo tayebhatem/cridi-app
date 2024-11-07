@@ -12,12 +12,16 @@ import { router } from 'expo-router'
 import useLanguageStore from '@/stores/useLanguageStore'
 import { passwordTranslation } from '@/constants/translation'
 import ConfirmModal from '@/components/ui/ConfirmModal'
+import ErrorMessage from '@/components/ui/ErrorMessage'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { useToast } from 'react-native-toast-notifications'
 
 const PasswordScreen = () => {
     const {account}=useAccountStore()
     const [showSuccess, setshowSuccess] = useState(false)
     const [open, setopen] = useState(false)
-    const [passwordForm, setPasswordFom] = useState({
+
+    const [passwordForm, setPasswordForm] = useState({
         currentPassword: {
           value: '',
           error: '',
@@ -33,8 +37,9 @@ const PasswordScreen = () => {
       });
     const {language}=useLanguageStore()
     const password=passwordTranslation(language)
+    const toast = useToast();
       const handleCurrentPasswordChange = (value: string) => {
-        setPasswordFom((prevState) => ({
+        setPasswordForm((prevState) => ({
           ...prevState,
           currentPassword: {
             ...prevState.currentPassword,
@@ -44,7 +49,7 @@ const PasswordScreen = () => {
         }));
       };
       const handleNewPasswordChange = (value: string) => {
-        setPasswordFom((prevState) => ({
+        setPasswordForm((prevState) => ({
           ...prevState,
           newPassword: {
             ...prevState.newPassword,
@@ -54,7 +59,7 @@ const PasswordScreen = () => {
         }));
       };
       const handleConfrimNewPasswordChange = (value: string) => {
-        setPasswordFom((prevState) => ({
+        setPasswordForm((prevState) => ({
           ...prevState,
           confirmNewPassword: {
             ...prevState.confirmNewPassword,
@@ -68,7 +73,7 @@ const PasswordScreen = () => {
         let valid = true;
     
         if (passwordForm.currentPassword.value.trim().length < 6) {
-          setPasswordFom((prevState) => ({
+          setPasswordForm((prevState) => ({
             ...prevState,
             currentPassword: {
               ...prevState.currentPassword,
@@ -78,7 +83,7 @@ const PasswordScreen = () => {
           valid = false;
         }
         if (passwordForm.newPassword.value.trim().length < 6) {
-            setPasswordFom((prevState) => ({
+          setPasswordForm((prevState) => ({
               ...prevState,
               newPassword: {
                 ...prevState.newPassword,
@@ -89,7 +94,7 @@ const PasswordScreen = () => {
           }
 
           if (passwordForm.confirmNewPassword.value.trim().length < 6) {
-            setPasswordFom((prevState) => ({
+            setPasswordForm((prevState) => ({
               ...prevState,
               confirmNewPassword: {
                 ...prevState.confirmNewPassword,
@@ -100,7 +105,7 @@ const PasswordScreen = () => {
           }
 
           if (passwordForm.confirmNewPassword.value!==passwordForm.newPassword.value) {
-            setPasswordFom((prevState) => ({
+            setPasswordForm((prevState) => ({
               ...prevState,
               confirmNewPassword: {
                 ...prevState.confirmNewPassword,
@@ -113,7 +118,7 @@ const PasswordScreen = () => {
          if(!account) return  
          const isOldPassword=await checkCurrentPassword(account?.id,passwordForm.currentPassword.value)
          if(!isOldPassword) {
-          setPasswordFom((prevState) => ({
+          setPasswordForm((prevState) => ({
             ...prevState,
             currentPassword: {
               ...prevState.currentPassword,
@@ -125,14 +130,26 @@ const PasswordScreen = () => {
          }
         return valid;
       };
-
+      const resetForm = () => {
+        setPasswordForm({
+            currentPassword: { value: '', error: '' },
+            newPassword: { value: '', error: '' },
+            confirmNewPassword: { value: '', error: '' },
+        });
+    };
       const confirm=async()=>{
        if(account){
         try {
             
           const data=  await updatePassword(account.id,passwordForm.newPassword.value)  
           if(data){
-            setshowSuccess(true)
+            resetForm()
+            setopen(false)
+            toast.show(password.successMessage,{
+              type:"success"
+            });
+         
+
           }
           } catch (error) {
               if(error instanceof Error){
@@ -151,11 +168,10 @@ const PasswordScreen = () => {
       }
   return (
    <>
-    <PageLayout>
-        <PageHeader title={password.passwordTitle}/>
-<View>
-<CardLayout>
-        <View className=''>
+   
+   <SafeAreaView className='bg-white dark:bg-dark-500 p-6 space-y-4 h-full'>
+   <PageHeader title={password.passwordTitle}/>
+   <View className=''>
         <Input 
             error={passwordForm.currentPassword.error}
             onChange={handleCurrentPasswordChange} 
@@ -164,9 +180,8 @@ const PasswordScreen = () => {
             type='password'
             value={passwordForm.currentPassword.value}
             />
-              {passwordForm.currentPassword.error ? (
-          <Text  className='text-red-500 font-kufi '>{passwordForm.currentPassword.error}</Text>
-        ) : null}
+            <ErrorMessage error={passwordForm.currentPassword.error}/>
+            
         <Input 
              error={passwordForm.newPassword.error}
             onChange={handleNewPasswordChange} 
@@ -175,9 +190,8 @@ const PasswordScreen = () => {
             type='password'
             value={passwordForm.newPassword.value}
             />
-               {passwordForm.newPassword.error ? (
-          <Text  className='text-red-500 font-kufi '>{passwordForm.newPassword.error}</Text>
-        ) : null}
+             <ErrorMessage error={passwordForm.newPassword.error}/>
+              
                <Input 
             error={passwordForm.confirmNewPassword.error}
             onChange={handleConfrimNewPasswordChange} 
@@ -186,14 +200,14 @@ const PasswordScreen = () => {
             type='password'
             value={passwordForm.confirmNewPassword.value}
             />
-    {passwordForm.confirmNewPassword.error ? (
-          <Text  className='text-red-500 font-kufi'>{passwordForm.confirmNewPassword.error}</Text>
-        ) : null}
-            <Button onChange={onSave} title={password.saveChangeButton}/>
+             <ErrorMessage error={passwordForm.confirmNewPassword.error}/>
+   
+          
         </View>
-        </CardLayout>
-</View>
-    </PageLayout>
+        <View>
+           <Button onChange={onSave} title={password.saveChangeButton}/>
+           </View>
+   </SafeAreaView>
     <ConfirmModal
   onChange={confirm}
   description={language?.id === 'en' 
@@ -210,17 +224,7 @@ const PasswordScreen = () => {
     : "تأكيد تغيير كلمة المرور"}
 />
 
-    <Alert 
-    open={showSuccess}
-    type='SUCCESS'
-    onSave={()=>{    
-        router.back()
-        setshowSuccess(false)
-    }
-    }
-    title={password.backToSettings}
-    description={password.successMessage}
-    />
+   
     </>
   )
 }

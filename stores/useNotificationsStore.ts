@@ -1,3 +1,4 @@
+import { NotificationType } from "@/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 
@@ -5,11 +6,18 @@ interface NotificationsState {
     messagesNotification: boolean;
     transactionsNotifications: boolean;
     adsNotifications: boolean;
+    requestNotifications: boolean;
     unreadMessagesCount: number;
     unreadNotificationsCount: number;
+    notifications:NotificationType[];
+    addNotification:(notification:NotificationType)=>void;
+    updateNotification:(notification:NotificationType)=>void;
+    deleteNotification:(id:string)=>void;
+    setNotifications:(notifications:NotificationType[])=>void;
     setMessagesNotification: (messagesNotification: boolean) => void;
     setTransactionsNotification: (transactionsNotifications: boolean) => void;
     setAdsNotification: (adsNotifications: boolean) => void;
+    setRequestsNotification: (adsNotifications: boolean) => void;
     setUnreadMessagesCount: (count: number) => void;
     setUnreadNotificationsCount: (count: number) => void;
     incrementUnreadMessagesCount: () => void;
@@ -19,12 +27,37 @@ interface NotificationsState {
 }
 
 const useNotificationsStore = create<NotificationsState>((set) => ({
+    notifications:[],
+    filterNotifcations:[],
     messagesNotification: true,
     adsNotifications: true,
     transactionsNotifications: true,
+    requestNotifications:true,
     unreadMessagesCount: 0,
     unreadNotificationsCount: 0,
-
+    setNotifications: (notifications:NotificationType[]) =>
+        set({ notifications }),
+   
+    addNotification: (notification:NotificationType) => {
+        set((state) => ({
+            notifications: [notification, ...state.notifications],
+        }));
+      },
+      
+      updateNotification: (updatedNotification:NotificationType) => {
+        set((state) => ({
+          notifications: state.notifications.map((notification) =>
+            notification.id === updatedNotification.id? updatedNotification : notification
+          ), 
+        }));
+      },
+      deleteNotification: (id:string) => {
+        set((state) => ({
+          notifications: state.notifications.filter((notification) =>
+            notification.id !== id
+          ), 
+        }));
+      },
     setMessagesNotification: async (messagesNotification: boolean) => {
         try {
             await AsyncStorage.setItem('messages-notifications', messagesNotification ? 'enabled' : 'disabled');
@@ -40,6 +73,14 @@ const useNotificationsStore = create<NotificationsState>((set) => ({
             set({ adsNotifications });
         } catch (error) {
             console.error("Failed to save ads notification setting:", error);
+        }
+    },
+    setRequestsNotification: async (requestNotifications: boolean) => {
+        try {
+            await AsyncStorage.setItem('requests-notifications', requestNotifications ? 'enabled' : 'disabled');
+            set({ requestNotifications });
+        } catch (error) {
+            console.error("Failed to save requests notification setting:", error);
         }
     },
 

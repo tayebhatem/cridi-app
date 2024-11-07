@@ -7,7 +7,7 @@ const Input = ({title,placeholder,type,value,error,onChange}:{title:string,place
     const [show, setShow] = useState(false);
   
   return (
-    <View className='space-y-2'>
+    <View className=''>
       <Text className={`text-base font-kufi-medium leading-9 text-black dark:text-white ${error && 'text-red-500'}`}>{title}</Text>
      <View className={`w-full flex flex-row items-center   bg-neutral-100 dark:bg-dark-300 border  rounded-md p-3 focus:border-primary-500 border-neutral-200 dark:border-dark-200 ${error && 'border-red-500'}`}>
       <View className='flex flex-row items-center flex-1 space-x-2 '>
@@ -30,7 +30,7 @@ const Input = ({title,placeholder,type,value,error,onChange}:{title:string,place
       defaultValue={value}
       onChangeText={(text)=>onChange(text)}
       
-      keyboardType={type==='email'?'email-address':type==='number'?'numeric':'default'}
+      keyboardType={type==='number'?'numeric':'default'}
      />
       </View>
     {

@@ -4,6 +4,7 @@ import { AccountUserType, StoreType } from '@/types'
 import { useRouter } from 'expo-router'
 import Avatar from '../ui/Avatar'
 import CardLayout from '../ui/CardLayout'
+import { MaterialIcons } from '@expo/vector-icons'
 
 const StoreItem = ({store}:{store:StoreType}) => {
     const router=useRouter()
@@ -15,8 +16,20 @@ const StoreItem = ({store}:{store:StoreType}) => {
      <Avatar size='Medium' url={store.avatar} uplaod/>
     <View>
     <Text className='font-medium text-base text-black dark:text-white text-center'>{store.name}</Text>
-    <Text className='text-neutral-400 text-center text-sm'>{store.adress}</Text>
-    <Text className='text-neutral-400 text-center text-sm'>{store.phone}</Text>
+ <View>
+ {
+    store.adress &&  <View className="flex flex-row justify-center items-center space-x-1">
+    <MaterialIcons name="location-pin" color={"#A3A3A3"} size={14} />
+   <Text className='text-neutral-500 text-xs'>{store.adress}</Text>  
+</View>
+   }
+  {
+    store.phone &&   <View className="flex flex-row justify-center items-center space-x-1">
+    <MaterialIcons name="phone" color={"#A3A3A3"} size={14} />
+    <Text className="text-neutral-500 text-xs">{store.phone}</Text>
+</View>
+  }
+ </View>
     </View>
      </View>
    </CardLayout>

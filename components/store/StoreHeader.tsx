@@ -1,9 +1,8 @@
 import { View, Text, Image, TouchableOpacity, useColorScheme } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { AntDesign } from '@expo/vector-icons'
+import { AntDesign, MaterialIcons } from '@expo/vector-icons'
 import {  getStoreByAccount } from '@/actions/store'
 import { useRouter } from 'expo-router'
-import { StoreType } from '@/types'
 import Avatar from '../ui/Avatar'
 import useStore from '@/stores/useStore'
 
@@ -29,14 +28,23 @@ const theme=useColorScheme()
 fetchStore()
 
   }, [id])
+  if(!store) return null
   return (
     <View className='flex flex-row items-center justify-between'>
    
   <View className='flex flex-row items-center gap-x-2 '>
-  <Avatar size='Small' url={store?.avatar} uplaod/>
+  <Avatar size='Small' url={store.avatar} uplaod/>
     <View>
-      <Text className='text-lg font-medium text-black dark:text-white'>{store?.name}</Text>
-      <Text className='text-neutral-500'>{store?.adress}</Text>  
+      <Text className='text-lg font-medium text-black dark:text-white'>{store.name}</Text>
+     
+                           <View className="flex flex-row items-center space-x-1">
+                                <MaterialIcons name="location-pin" color={"#A3A3A3"} size={14} />
+                               <Text className='text-neutral-500 text-xs'>{store.adress}</Text>  
+                            </View>
+                            <View className="flex flex-row items-center space-x-1">
+                                <MaterialIcons name="phone" color={"#A3A3A3"} size={14} />
+                                <Text className="text-neutral-500 text-xs">{store?.phone}</Text>
+                            </View>
     </View>
  
   </View>

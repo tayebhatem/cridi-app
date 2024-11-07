@@ -13,7 +13,6 @@ import CardLayout from '@/components/ui/CardLayout'
 import {format, formatDate} from 'date-fns'
 import TotaleCard from '@/components/debts/TotaleCard'
 import EmptyList from '@/components/ui/EmptyList'
-import { markAllasRead } from '@/actions/notifications'
 const DebtsScreen = () => {
   const {id}=useLocalSearchParams();
   
@@ -106,17 +105,7 @@ const DebtsScreen = () => {
         setDebts(filterData)
       }
     }
-useEffect(() => {
-  const updateUnreadDebts=async()=>{
-     try {
-      await markAllasRead(id as string,'debt')
 
-     } catch (error) {
-      
-     }
-  }
-  updateUnreadDebts()
-}, [])
 
   return (
     <PageLayout>

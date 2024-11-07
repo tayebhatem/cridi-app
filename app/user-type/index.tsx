@@ -7,6 +7,7 @@ import Button from "@/components/ui/Button";
 import useLanguageStore from "@/stores/useLanguageStore";
 import { updateAccountType } from "@/libs/appwrite";
 import useAccountStore from "@/stores/useAccountStore";
+import Logo from "@/components/ui/Logo";
 
 const UserTypeScreen = () => {
   const [category, setCategory] = useState<'CLIENT' | 'SUPPLIER'>('CLIENT');
@@ -17,10 +18,15 @@ const {account,setAccount}=useAccountStore()
     try {
     
      if(account){
-       const updatedAccount= await updateAccountType(category,account?.id)
+       const updatedAccount= await updateAccountType(category,account.id)
       if(updatedAccount){
         setAccount(updatedAccount)
-        router.push('/dashboard');
+        if(updatedAccount.type==='SUPPLIER'){
+          router.push('/supplier');
+        }
+        if(updatedAccount.type==='CLIENT'){
+          router.push('/dashboard');
+        }
       }
      }
     } catch (error) {
@@ -30,15 +36,12 @@ const {account,setAccount}=useAccountStore()
 
   return (
     <SafeAreaView className="bg-white h-full w-full px-6 justify-center">
-      <View className='w-full items-center'>
-        <Image source={require('../../assets/images/logo.png')} resizeMode='contain' className='w-24 h-24 ' />
-      </View>
-
-      <Text className="text-3xl font-semibold capitalize">
+   
+      <Text  className="text-2xl font-kufi-semi-bold">
         {language?.id === 'en' ? 'Choose Account Category' : language?.id === 'fr' ? 'Choisissez la catégorie de compte' : 'اختر فئة الحساب'}
       </Text>
 
-      <Text className="text-base text-primary-gray-500 my-2">
+      <Text className="text-neutral-400 font-kufi leading-6">
         {language?.id === 'en' 
           ? 'Please select the appropriate account category to continue.' 
           : language?.id === 'fr' 
@@ -89,7 +92,7 @@ const {account,setAccount}=useAccountStore()
           )}
 
           <View className="bg-green-100 items-center justify-center rounded-full w-20 h-20">
-            <FontAwesome5 name="user-tie" size={30} color="#22c55e" />
+            <FontAwesome5 name="user-tie" size={40} color="#22c55e" />
           </View>
 
           <View>
@@ -103,7 +106,9 @@ const {account,setAccount}=useAccountStore()
         </TouchableOpacity>
       </View>
 
-      <Button title={language?.id === 'en' ? 'Save' : language?.id === 'fr' ? 'Enregistrer' : 'حفظ'} onChange={submit} />
+    <View>
+    <Button title={language?.id === 'en' ? 'Save' : language?.id === 'fr' ? 'Enregistrer' : 'حفظ'} onChange={submit} />
+    </View>
     </SafeAreaView>
   );
 };

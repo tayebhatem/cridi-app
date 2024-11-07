@@ -1,10 +1,10 @@
-import { View, Text, FlatList } from 'react-native'
+import { View, Text, FlatList, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import PageLayout from '@/components/ui/PageLayout'
 import PageHeader from '@/components/ui/PageHeader'
 import useLanguageStore from '@/stores/useLanguageStore'
 import useAccountStore from '@/stores/useAccountStore'
-import { AccountUserType, StoreType } from '@/types'
+import {  StoreType } from '@/types'
 import { getStores } from '@/actions/store'
 import StoreItem from '@/components/store/StoreItem'
 import SearchInput from '@/components/ui/SearchInput'
@@ -13,6 +13,7 @@ const StoresScreen = () => {
   const {language}=useLanguageStore()
   const [stors, setStors] = useState<StoreType[]>([])
   const [data, setData] = useState<StoreType[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const {account}=useAccountStore()
   useEffect(() => {
    const fetchStors=async()=>{
@@ -24,6 +25,8 @@ const StoresScreen = () => {
               setData(data)
            } catch (error) {
               
+           }finally{
+            setIsLoading(false)
            }
        }
    }
@@ -46,21 +49,27 @@ setStors(data)
   <PageHeader title={language?.id==='en'?"Stores":language?.id==='fr'?"Magazines":"محلات"}/>
   <View>
    <SearchInput 
-   onChange={handleSearch} 
-   placeholder={language?.id==='en'?"Search a store...":language?.id==='fr'?"Rechercher un magasin...":"إبحث عن محل..."}/>
+   onChange={handleSearch}/>
   </View>
   <View>
-  <FlatList
-   showsHorizontalScrollIndicator={false}
-   showsVerticalScrollIndicator={false}
-   numColumns={2}
-   className=''
-   contentContainerStyle={{gap:20,alignItems:stors?.length>1 ?'center':'baseline'}}
-   columnWrapperStyle={{gap:20}}
-   data={stors}
-   keyExtractor={item=>item.id}
-   renderItem={(item)=><StoreItem store={item.item}/>}
-   />
+{isLoading?<View className='w-full h-full justify-center items-center'>
+  <ActivityIndicator size={'large'} color={'#059669'}/>
+</View>:
+    <FlatList
+    showsHorizontalScrollIndicator={false}
+    showsVerticalScrollIndicator={false}
+    numColumns={2}
+    className=''
+    contentContainerStyle={{rowGap:10}}
+    columnWrapperStyle={{gap:10}}
+    data={stors}
+    keyExtractor={item=>item.id}
+    renderItem={(item)=>
+    <View className={stors.length>1 ?'flex-1':'w-1/2'}>
+     <StoreItem store={item.item}/>
+    </View>}
+    />
+}
   </View>
  </PageLayout>
   )

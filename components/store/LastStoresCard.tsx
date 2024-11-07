@@ -8,6 +8,10 @@ import StoreItem from './StoreItem'
 import useLanguageStore from '@/stores/useLanguageStore'
 import CardLayout from '../ui/CardLayout'
 import { Feather } from '@expo/vector-icons'
+import { Button } from 'tamagui'
+import { AlertDialogDemo } from '../ui/Alert-dialog-demo'
+
+
 
 const LastStoresCard = () => {
   const { language } = useLanguageStore()
@@ -78,12 +82,14 @@ const LastStoresCard = () => {
               : 'إبحث عن المتاجر لربطها بحسابك'}
                     </Text>
                   </View>
+              <AlertDialogDemo/>
                   <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={() => router.push('/stores')}
                     className="bg-primary-500 shadow-primary-500 shadow-md rounded-md py-3 px-6 flex flex-row justify-center items-center space-x-2"
                   >
                     <Feather name="search" size={24} color="#FFF" />
+
                     <Text className="text-white font-kufi-medium text-base leading-8">
                       {language?.id === 'en'
                         ? 'Search'

@@ -10,7 +10,7 @@ const Header = () => {
     const{language}=useLanguageStore()
   return (
     <View className='flex flex-row justify-between items-center'>
-    <Image source={require('../../assets/images/logo.png')} resizeMode='contain' className='w-16 h-16'/>
+    <Image source={require('../../assets/images/logo.png')} resizeMode='contain' className='w-10 h-10'/>
     <View className='flex flex-row space-x-2 '>
     <View className='text-left'>
     <Text className='text-sm text-neutral-400 font-kufi leading-6'>{

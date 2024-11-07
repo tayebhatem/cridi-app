@@ -7,7 +7,7 @@ export interface AccountType{
     email:string;
     phone:string;
     avatar:string;
-    type:'CLIENT'| 'SUPLIER' | 'NONE',
+    type:'CLIENT'| 'SUPPLIER' | 'NONE',
     verified:boolean
 }
 export interface StoreType{
@@ -64,11 +64,36 @@ export interface publicationType{
 export interface NotificationType{
     id:string;
     read:boolean;
-    type:'debt'|'payment'|'publication'
+    type:'debt'|'payment'|'publication' | 'request'
     account:string;
     storeName:string;
     storeImage:string,
    text:string;
    accountuser:string;
    date:string;
+}
+
+export interface SubscriptionType{
+    type:'FREE' | 'STANDRAD' | 'PRO';
+    expire:string
+}
+
+export interface itemType{
+    id:number,
+    name:{
+      ar:string,
+      fr:string,
+      en:string
+    }
+  }
+export interface SupplierType{
+    id:string;
+    state:itemType;
+    field:itemType;
+    description:string;
+}
+export interface FAQType{
+    id: string;
+    question: string;
+    answer: string;
 }

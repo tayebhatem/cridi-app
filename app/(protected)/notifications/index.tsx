@@ -15,7 +15,9 @@ const NotificationsScreen = () => {
     setAdsNotification,
     setMessagesNotification,
     setTransactionsNotification,
-    transactionsNotifications
+    transactionsNotifications,
+    requestNotifications,
+    setRequestsNotification
 
     }=useNotificationsStore()
     const notifications=notificationsTranslation(language)
@@ -35,6 +37,10 @@ const NotificationsScreen = () => {
             <View className='flex flex-row items-center justify-between py-2'>
                 <Text className='text-base text-neutral-500 font-kufi leading-9'>{notifications.publicationsNotifications}</Text>
                 <Switch value={adsNotifications} onValueChange={()=>setAdsNotification(!adsNotifications)} />
+            </View>
+            <View className='flex flex-row items-center justify-between py-2'>
+                <Text className='text-base text-neutral-500 font-kufi leading-9'>{notifications.requestsNotifications}</Text>
+                <Switch value={requestNotifications} onValueChange={()=>setRequestsNotification(!requestNotifications)} />
             </View>
         </CardLayout>
        </View>

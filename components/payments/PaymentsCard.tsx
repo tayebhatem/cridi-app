@@ -16,7 +16,7 @@ const PaymentsCard = ({id}:{id:string}) => {
             const data=await getPayments(id as string,25)
             setPayments(data)
           } catch (error) {
-            
+            console.log(error)
           }finally{
             setIsLoading(false)
           }

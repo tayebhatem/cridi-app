@@ -1,3 +1,4 @@
+import { languageData } from "@/constants/Language";
 import { LanguageType } from "@/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
@@ -9,7 +10,7 @@ interface LanguageState{
 }
 
 const useLanguageStore=create<LanguageState>( (set)=>({
-    language:null,
+    language:languageData[1],
     setLanguage:async(language:LanguageType)=>{
         try {
             // Save the language id to AsyncStorage

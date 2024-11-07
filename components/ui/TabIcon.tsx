@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 const TabIcon = ({ icon, color,focused, name,notification }:{icon:any,color:string,focused:boolean,name:string,notification:number | undefined}) => {
  
   return (
-    <View className="flex items-center justify-center gap-y-1.5 my-2">
+    <View className="flex items-center justify-center gap-y-1.5">
    <View>
    {notification!==undefined && notification>0 && 
        <View className='absolute -top-2 -right-2 w-5 h-5 text-sm justify-center items-center bg-red-500 z-50 rounded-full'>

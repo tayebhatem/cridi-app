@@ -4,7 +4,7 @@ import { useChatContext } from 'stream-chat-expo';
 import messaging from '@react-native-firebase/messaging'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StreamChat } from 'stream-chat';
-import notifee, { EventType } from '@notifee/react-native';
+import notifee, { AndroidImportance, AndroidVisibility, EventType } from '@notifee/react-native';
 import useNotificationsStore from '@/stores/useNotificationsStore';
 
 const key=process.env.EXPO_PUBLIC_STREAM_KEY || ''
@@ -27,7 +27,7 @@ export default function MessagesProvider({children}:{children:ReactNode}) {
   const [isReady, setIsReady] = useState(false);
   const unsubscribeTokenRefreshListenerRef = useRef<() => void>();
   const {account}=useAccountStore()
- const {messagesNotification}=useNotificationsStore()
+ const {messagesNotification,incrementUnreadMessagesCount}=useNotificationsStore()
  
   useEffect(() => {
   if(account){
@@ -116,12 +116,14 @@ export default function MessagesProvider({children}:{children:ReactNode}) {
         data,
         android: {
           channelId,
+          importance:AndroidImportance.HIGH,
+          visibility: AndroidVisibility.PUBLIC, 
           pressAction: {
             id: 'default',
           },
         },
       });
-
+    incrementUnreadMessagesCount()
     });
     
   }, [messagesNotification])
@@ -132,6 +134,7 @@ export default function MessagesProvider({children}:{children:ReactNode}) {
     // add listener to notifications received when on foreground
     const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
       if(!remoteMessage.data || !messagesNotification) return
+
       const messageId=remoteMessage.data.id as string
       const message = await client.getMessage(messageId);
         
@@ -155,12 +158,15 @@ export default function MessagesProvider({children}:{children:ReactNode}) {
         data,
         android: {
           channelId,
-        
+          importance:AndroidImportance.HIGH,
+          visibility: AndroidVisibility.PUBLIC, 
           pressAction: {
             id: 'default',
           },
         },
       });
+
+
     });
  
   

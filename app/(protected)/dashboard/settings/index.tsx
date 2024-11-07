@@ -4,47 +4,42 @@ import {  useRouter } from 'expo-router';
 import {  FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { deleteSession } from '@/libs/appwrite';
 import ConfirmModal from '@/components/ui/ConfirmModal';
-import PageHeader from '@/components/ui/PageHeader';
 import PageLayout from '@/components/ui/PageLayout';
 import LanguageDrawer from '@/components/ui/LanguageDrawer';
 
 import { settingsTranslation } from '@/constants/translation';
 import useLanguageStore from '@/stores/useLanguageStore';
 import CardLayout from '@/components/ui/CardLayout';
-import { useChatContext } from 'stream-chat-expo';
-import {Appearance} from 'react-native';
+import useNotificationsStore from '@/stores/useNotificationsStore';
+import useAccountStore from '@/stores/useAccountStore';
+import { User,Lock,Languages,Bell,AlertTriangle,MessageCircleQuestion, LogOut } from '@tamagui/lucide-icons'
+
 const SettingsScreen = () => {
   const router = useRouter();
  
   const [open, setOpen] = useState(false);
   const [openLanguage, setopenLanguage] = useState(false);
-  const theme=useColorScheme()
-  
-  const {client}=useChatContext()
   const { language } = useLanguageStore();
+  const {setUnreadNotificationsCount,setUnreadMessagesCount}=useNotificationsStore()
+  const{clearAccount}=useAccountStore()
   const settings = settingsTranslation(language);
   const logout = async () => {
     try {
       const response = await deleteSession();
       if (response) {
-        client.disconnectUser()
+        setUnreadMessagesCount(0)
+        setUnreadNotificationsCount(0)
+       // clearAccount()
+        setOpen(false)
         router.replace('/auth/sign-in');
-        setOpen(false);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const toggleTheme=()=>{
-
-  }
-
-  useEffect(() => {
-   Appearance.addChangeListener((listner)=>{
-    console.log(listner.colorScheme)
-   })
-  }, [])
+ 
+ 
   
   return (
     <>
@@ -65,7 +60,8 @@ const SettingsScreen = () => {
   activeOpacity={0.8}
   className='flex flex-row items-center pb-4 w-full border-b border-neutral-100 dark:border-dark-300'>
   <View className='flex flex-row items-center gap-x-3 w-full'>
-    <FontAwesome name='user' color={'#aaa'} size={24} />
+   
+    <User size={24} color={'#A3A3A3'}/>
     <Text className='text-neutral-400 font-kufi-medium'>{settings.account}</Text>
   </View>
   <MaterialIcons name='arrow-forward-ios' color={'#A3A3A3'} size={24} />
@@ -76,7 +72,7 @@ const SettingsScreen = () => {
   activeOpacity={0.8}
   className='flex flex-row items-center justify-between w-full pb-4 border-b border-neutral-100 dark:border-dark-300'>
   <View className='flex flex-row items-center gap-x-3 w-full'>
-    <FontAwesome name='lock' color={'#A3A3A3'} size={24} />
+  <Lock size={24} color={'#A3A3A3'}/>
     <Text className='text-neutral-400 font-kufi-medium'>{settings.password}</Text>
   </View>
   <MaterialIcons name='arrow-forward-ios' color={'#A3A3A3'} size={24} />
@@ -87,7 +83,7 @@ const SettingsScreen = () => {
   activeOpacity={0.8}
   className='flex flex-row items-center w-full pb-4 border-b border-neutral-100 dark:border-dark-300'>
   <View className='flex flex-row items-center gap-x-3 w-full'>
-    <FontAwesome name='bell' color={'#A3A3A3'} size={24} />
+  <Bell size={24} color={'#A3A3A3'}/>
     <Text className='text-neutral-400 font-kufi-medium'>{settings.notifications}</Text>
   </View>
   <MaterialIcons name='arrow-forward-ios' color={'#aaa'} size={24} />
@@ -110,7 +106,7 @@ const SettingsScreen = () => {
   activeOpacity={0.8}
   className='flex flex-row items-center w-full '>
   <View className='flex flex-row items-center gap-x-3 w-full'>
-    <FontAwesome name='globe' color={'#A3A3A3'} size={24} />
+  <Languages size={24} color={'#A3A3A3'}/>
     <Text className='text-neutral-400 font-kufi-medium'>{settings.languageLabel}</Text>
   </View>
 </TouchableOpacity>
@@ -128,7 +124,7 @@ const SettingsScreen = () => {
   activeOpacity={0.8}
   className='flex flex-row items-center w-full pb-4 border-b border-neutral-100 dark:border-dark-300'>
   <View className='flex flex-row items-center gap-x-3 w-full'>
-    <FontAwesome name='warning' color={'#aaa'} size={24} />
+  <AlertTriangle size={24} color={'#A3A3A3'}/>
     <Text className='text-neutral-400 font-kufi-medium'>{settings.report}</Text>
   </View>
   <MaterialIcons name='arrow-forward-ios' color={'#A3A3A3'} size={24} />
@@ -139,7 +135,7 @@ const SettingsScreen = () => {
   activeOpacity={0.8}
   className='flex flex-row items-center w-full pb-4 border-b border-neutral-100 dark:border-dark-300'>
   <View className='flex flex-row items-center gap-x-3 w-full'>
-    <FontAwesome name='question' color={'#A3A3A3'} size={24} />
+  <MessageCircleQuestion size={24} color={'#A3A3A3'}/>
     <Text className='text-neutral-400 font-kufi-medium'>{settings.faq}</Text>
   </View>
   <MaterialIcons name='arrow-forward-ios' color={'#aaa'} size={24} />
@@ -149,7 +145,7 @@ const SettingsScreen = () => {
 activeOpacity={0.8} 
 onPress={() => setOpen(true)}
 className='flex flex-row items-center  space-x-2 '>
-  <FontAwesome name='sign-out' color={'#ef4444'} size={24} />
+  <LogOut size={24} color={'#ef4444'}/>
   <Text className='text-red-500 font-kufi-semi-bold'>{settings.logout}</Text>
 </TouchableOpacity>
 
@@ -167,6 +163,7 @@ className='flex flex-row items-center  space-x-2 '>
         setOpen={setOpen} />
 
       <LanguageDrawer open={openLanguage} setOpen={setopenLanguage} />
+
     </>
   );
 };

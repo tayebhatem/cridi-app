@@ -1,4 +1,4 @@
-import { View, Text, Image, ScrollView } from 'react-native';
+import { View, Text, Image, ScrollView, Pressable, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Input from '@/components/ui/Input';
@@ -7,13 +7,19 @@ import { Link, useRouter } from 'expo-router';
 import { createAccount, login } from '@/libs/appwrite';
 import Alert from '@/components/ui/Alert';
 import useLanguageStore from '@/stores/useLanguageStore';
-
+import Logo from '@/components/ui/Logo';
+import LanguageButton from '@/components/ui/LanguageButton';
+import * as WebBrowser from 'expo-web-browser';
+import { FontAwesome } from '@expo/vector-icons';
+import ErrorMessage from '@/components/ui/ErrorMessage';
+import useAccountStore from '@/stores/useAccountStore';
+import { states, supplierFields } from '@/constants/supplier';
 const SignUpScreen = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState('');
   const { language } = useLanguageStore(); 
-  
+  const {setAccount,setSupplier}=useAccountStore()
   const [registerForm, setRegisterForm] = useState({
     name: {
       value: '',
@@ -31,12 +37,20 @@ const SignUpScreen = () => {
       value: '',
       error: '',
     },
+    policy:{
+      value:false,
+      error:''
+    }
   });
 
- 
+  const openBrowser = async () => {
+    let result = await WebBrowser.openBrowserAsync('https://www.cridi.online/policy');
+    console.log(result); // Logs the result after closing the browser
+  };
 
   const validateForm = () => {
     let valid = true;
+
 // Validate username
 if (registerForm.name.value.trim().length < 6) {
   setRegisterForm((prevState) => ({
@@ -94,10 +108,27 @@ if (registerForm.name.value.trim().length < 6) {
       }));
       valid = false;
     }
-
+if (!registerForm.policy.value) {
+  setRegisterForm((prevState) => ({
+    ...prevState,
+    policy: {
+      ...prevState.policy,
+      error: language?.id === 'en' ? 'Have to accept terms and policies' : language?.id === 'fr' ? 'Doit accepter les termes et politiques' :'يجب أن تقبل الشروط والسياسات',
+    },
+  }));
+  valid = false;
+}
     return valid;
   };
-
+  const handleChangePolicy=()=>{
+    setRegisterForm((prevState) => ({
+      ...prevState,
+      policy: {
+        value:!registerForm.policy.value,
+        error: '', // Clear error on input change
+      },
+    }));
+  }
   // Handle form submission
   const handleSubmit = async () => {
     const isValid = validateForm();
@@ -107,7 +138,26 @@ if (registerForm.name.value.trim().length < 6) {
         const {username,password,name}=registerForm
        const session = await createAccount(username.value,name.value,password.value);
         if (session) {
-          router.push('../../dashboard');
+            setAccount({
+             id:session.account.$id,
+             name:session.account.name,
+             username:session.account.username,
+             email:session.account.email,
+             type:session.account.type,
+             avatar:session.account.avatar,
+             phone:session.account.phone,
+             verified:session.account.verified
+            })
+         if(session.account.supplier){
+             setSupplier({
+               id:session.account.supplier.$id,
+               description:session.account.supplier.description,
+               field:supplierFields.find(item=>item.id===session.account.supplier.field) || supplierFields[0],
+               state:states.find(item=>item.id===session.account.supplier.state) || states[0]
+             })
+         
+         }
+          router.push('/auth/send-account-otp');
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -117,7 +167,7 @@ if (registerForm.name.value.trim().length < 6) {
   ? 'Username already exists' 
   : language?.id === 'fr' 
   ? "Le nom d'utilisateur existe déjà." 
-  : "اسم المستخدم موجود بالفعل.";
+  : "اسم المستخدم موجود.";
   setRegisterForm((prevState) => ({
     ...prevState,
     username: {
@@ -137,11 +187,13 @@ if (registerForm.name.value.trim().length < 6) {
 
   return (
     <>
-      <SafeAreaView className="bg-white p-4 h-full ">
-        <ScrollView className='h-full space-y-2' showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
-          <View className='w-full items-center'>
-            <Image source={require('../../../assets/images/logo.png')} resizeMode='contain' className='w-24 h-24 ' />
-          </View>
+      <SafeAreaView className="bg-white p-6 h-full ">
+     
+        <ScrollView className='h-full space-y-3' showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
+        <LanguageButton/>
+        <View className=''>
+     <Logo/>
+     </View>
 
           <View className=''>
             <Text className="text-2xl font-kufi-semi-bold">
@@ -152,7 +204,8 @@ if (registerForm.name.value.trim().length < 6) {
             </Text>
           </View>
           
-          <Input
+       <View>
+       <Input
             title={language?.id === 'en' ? 'Name' : language?.id === 'fr' ? 'Nom' : 'الإسم'}
             type="text"
             placeholder='John Doe'
@@ -163,9 +216,8 @@ if (registerForm.name.value.trim().length < 6) {
               name: { value, error: '' }
             }))}
           />
-   {registerForm.name.error && (
-            <Text className='text-red-500 font-kufi leading-5'>{registerForm.name.error}</Text>
-          ) }
+             <ErrorMessage error={registerForm.name.error}/>
+  
           <Input
             title={language?.id === 'en' ? 'Username' : language?.id === 'fr' ? 'Nom d\'utilisateur' : 'إسم المستخدم'}
             type="text"
@@ -177,9 +229,8 @@ if (registerForm.name.value.trim().length < 6) {
               username: { value, error: '' }
             }))}
           />
- {registerForm.username.error && (
-            <Text className='text-red-500 font-kufi leading-5'>{registerForm.username.error}</Text>
-          ) }
+          <ErrorMessage error={registerForm.username.error}/>
+
           <Input
             title={language?.id === 'en' ? 'Password' : language?.id === 'fr' ? 'Mot de passe' : 'كلمة المرور'}
             type="password"
@@ -191,9 +242,8 @@ if (registerForm.name.value.trim().length < 6) {
               password: { value, error: '' }
             }))}
           />
- {registerForm.password.error && (
-            <Text className='text-red-500 font-kufi leading-5'>{registerForm.password.error}</Text>
-          ) }
+            <ErrorMessage error={registerForm.password.error}/>
+
           <Input
             title={language?.id === 'en' ? 'Confirm Password' : language?.id === 'fr' ? 'Confirmer le mot de passe' : 'تأكيد كلمة المرور'}
             type="password"
@@ -205,12 +255,33 @@ if (registerForm.name.value.trim().length < 6) {
               confirmPassword: { value, error: '' }
             }))}
           />
- {registerForm.confirmPassword.error && (
-            <Text className='text-red-500 font-kufi leading-5'>{registerForm.confirmPassword.error}</Text>
-          ) }
-          <Button title={language?.id === 'en' ? 'Sign Up' : language?.id === 'fr' ? 'Inscription' : 'إنشاء حساب'}  onChange={handleSubmit} />
+          <ErrorMessage error={registerForm.confirmPassword.error}/>
 
-          <View className='flex flex-row items-center space-x-2 justify-center'>
+
+      <View className='py-1'>
+      <View className={`flex flex-row items-center gap-x-1.5 ${language?.id==='ar' && 'flex-row-reverse'}`}>
+         <TouchableOpacity activeOpacity={0.8} onPress={handleChangePolicy}>
+         <FontAwesome name="check-square" size={18} color={registerForm.policy.value?"#059669":"#A3A3A3"} />
+         </TouchableOpacity>
+            <Text className=' font-kufi-medium'>
+              {language?.id==='en'?"Accept":language?.id==='fr'?"Accepter":"إقبل"}
+            </Text>
+            <Pressable onPress={()=>router.push('/policy')}> 
+            <Text  className='text-primary-500 underline font-kufi-medium'>
+            {language?.id==='en'?"terms and policies":language?.id==='fr'?"les termes et politiques":"الشروط والسياسات"}
+            </Text>
+              </Pressable>
+          </View>
+         <ErrorMessage error={registerForm.policy.error}/>
+      </View>
+
+       </View>
+
+     <View>
+     <Button title={language?.id === 'en' ? 'Sign Up' : language?.id === 'fr' ? 'Inscription' : 'إنشاء حساب'}  onChange={handleSubmit} />
+     </View>
+
+          <View className={`flex py-3 ${language?.id==='ar'?'flex-row-reverse':'flex-row'} items-center gap-x-2 justify-center `}>
             <Text className='font-kufi-medium text-center text-base'>
               {language?.id === 'en' ? 'Already have an account?' : language?.id === 'fr' ? 'Vous avez déjà un compte ?' : 'لديك حساب بالفعل؟'}
             </Text>
@@ -218,6 +289,7 @@ if (registerForm.name.value.trim().length < 6) {
               {language?.id === 'en' ? 'Login' : language?.id === 'fr' ? 'Connexion' : 'تسجيل الدخول'}
             </Link>
           </View>
+
         </ScrollView>
       </SafeAreaView>
 

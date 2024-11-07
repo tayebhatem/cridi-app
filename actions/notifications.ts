@@ -83,6 +83,17 @@ export const markAsRead=async(id:string)=>{
     }
 }
 
+export const deleteNotificationItem=async(id:string)=>{
+  
+      await databases.deleteDocument(
+            config.database,
+            config.notifications,
+            id,
+           
+        )
+}
+
+
 export const markAllasRead=async(accountUser:string,type:'debt'|'payment')=>{
       try {
         const data=await databases.listDocuments(

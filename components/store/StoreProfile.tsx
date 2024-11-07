@@ -7,17 +7,16 @@ import Avatar from '../ui/Avatar';
 import { AntDesign, Entypo, MaterialIcons } from '@expo/vector-icons';
 import CardLayout from '../ui/CardLayout';
 import PageLayout from '../ui/PageLayout';
-import Button from '../ui/Button';
 import useAccountStore from '@/stores/useAccountStore';
 import Loader from '../ui/Loader';
-import { createRequest } from '@/libs/appwrite';
+import { createRequest, deleteRequest } from '@/libs/appwrite';
 import { useChatContext } from 'stream-chat-expo';
 import { router } from 'expo-router';
 import useLanguageStore from '@/stores/useLanguageStore';
-
+import { Plus,Check } from '@tamagui/lucide-icons'
 const StoreProfile = ({ id }: { id: string }) => {
     const [store, setStore] = useState<StoreType | undefined>();
-    const [accountUser, setAccountUser] = useState<AccountUserType | undefined>();
+    const [accountUser, setAccountUser] = useState<AccountUserType | null | undefined>();
     const { language } = useLanguageStore();
     const [isLoading, setisLoading] = useState(true);
     const { account } = useAccountStore();
@@ -34,7 +33,7 @@ const StoreProfile = ({ id }: { id: string }) => {
                 router.push(`../conversation/${channel.cid}`);
             }
         } catch (error) {
-            console.log(error);
+           
         }
     };
 
@@ -43,9 +42,22 @@ const StoreProfile = ({ id }: { id: string }) => {
             try {
                 const data = await createRequest(account, id);
                 if (data) setAccountUser(data);
-            } catch (error) {}
+            } catch (error) {
+
+            }
         }
     };
+
+    const cancelRequest=async()=>{
+    if(accountUser){
+        try {
+            await deleteRequest(accountUser?.id)
+            setAccountUser(null)
+          } catch (error) {
+            
+          }
+    }
+    }
 
     useEffect(() => {
         if (account && id) {
@@ -95,29 +107,27 @@ const StoreProfile = ({ id }: { id: string }) => {
                     <View className="flex flex-row space-x-2">
                         <View className="flex-1">
                             <TouchableOpacity
-                                onPress={sendRequest}
+                                onPress={accountUser?cancelRequest:sendRequest}
                                 activeOpacity={0.8}
-                                className={`bg-primary-500 flex flex-row justify-center space-x-2 rounded-md p-3 shadow-primary-500 shadow-md ${
-                                    accountUser && 'opacity-70'
-                                }`}
+                                className='bg-primary-500 flex flex-row justify-center space-x-2 rounded-md p-3 shadow-primary-500 shadow-md'
                             >
                                 {accountUser ? (
-                                    <AntDesign name="clockcircleo" size={24} color="#FFF" />
+                                   <Check size={24} color="#FFF"/>
                                 ) : (
-                                    <Entypo name="plus" size={24} color="#FFF" />
+                                    <Plus size={24} color="#FFF"/>
                                 )}
                                 <Text className="text-white font-kufi-medium text-base text-center leading-7">
                                     {language?.id === 'en'
                                         ? accountUser
-                                            ? 'Pending...'
-                                            : 'Request'
+                                            ? 'Cancel'
+                                            : 'Add'
                                         : language?.id === 'fr'
                                         ? accountUser
-                                            ? 'En attente...'
-                                            : 'Demander'
+                                            ? 'Annuler'
+                                            : 'Ajouter'
                                         : accountUser
-                                        ? 'معلق...'
-                                        : 'طلب'}
+                                        ? 'إلغاء'
+                                        : 'أضف'}
                                 </Text>
                             </TouchableOpacity>
                         </View>

@@ -1,60 +1,67 @@
-import { View, Text } from 'react-native'
-import React, { useState } from 'react'
-import PageLayout from '@/components/ui/PageLayout'
+import { View, Text, ToastAndroid } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import PageHeader from '@/components/ui/PageHeader'
-import CardLayout from '@/components/ui/CardLayout'
 import Button from '@/components/ui/Button'
 import TextArea from '@/components/ui/TextArea'
-import Alert from '@/components/ui/Alert'
-import { router } from 'expo-router'
 import useLanguageStore from '@/stores/useLanguageStore'
 import { reportTranslation } from '@/constants/translation'
 import { sendReport } from '@/libs/appwrite'
 import useAccountStore from '@/stores/useAccountStore'
+import ErrorMessage from '@/components/ui/ErrorMessage'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { useToast } from "react-native-toast-notifications";
+import { AlertCircle, Check, CheckCircle } from '@tamagui/lucide-icons'
+import { router } from 'expo-router'
+
 
 const ReportPage = () => {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const{account}=useAccountStore()
-  const [showSuccess, setshowSuccess] = useState(false)
   const { language } = useLanguageStore();
   const report=reportTranslation(language)
+  const toast = useToast();
+ 
     const onSave=async()=>{
-     if(message.length>0){
+     if(message){
         //send report message
       if(account){
         
         const data=await sendReport(message,account.id)
  
-       if(data) setshowSuccess(true)
+       if(data) {
+        toast.show(report.reportSuccessMessage,{
+          type:"success"
+        });
+        setMessage('')
+        setError('')
+        router.back()
+       }
       }
      }else{
         setError(report.errorMessageRequired)
      }
     }
+
+   
+
   return (
  <>
-  <PageLayout>
+ <SafeAreaView className='bg-white dark:bg-dark-500 p-6 space-y-4 h-full ' >
     <PageHeader title={report.reportTitle}/>
    <View>
-   <CardLayout>
+ 
     <TextArea title={report.messageTitle} onChange={setMessage} error={error} placeholder={report.messagePlaceholder} value={message} />
-    {error && (
-          <Text  className='text-red-500 font-kufi '>{error}</Text>
-        ) }
-        <Button title={report.confirmButton} onChange={onSave}/>
-       
-        </CardLayout>
+    <ErrorMessage error={error}/>
+      
    </View>
-  </PageLayout>
-  <Alert 
-  open={showSuccess}
-  type='SUCCESS'
-  title={report.backToSettings}
-  description={report.reportSuccessMessage} 
-  onSave={()=>{
-    setshowSuccess(false)
-    router.back()}}/>
+   <View >
+    <Button title={report.confirmButton} onChange={onSave}/>
+       
+    </View>
+   </SafeAreaView>
+   
+  
  </>
   )
 }

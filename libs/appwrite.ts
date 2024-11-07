@@ -3,8 +3,11 @@ import { Client,  ID,Databases, Query, Storage, ImageGravity, Avatars } from 're
 import * as SecureStore from 'expo-secure-store';
 import axios from 'axios';
 import { toZonedTime } from 'date-fns-tz';
-import { AccountType, AccountUserType, publicationType } from '@/types';
+import { AccountType, AccountUserType, publicationType, SubscriptionType, SupplierType } from '@/types';
+import { format } from 'date-fns';
+import { states, supplierFields } from '@/constants/supplier';
 export const client = new Client()
+    .setEndpoint('https://cloud.appwrite.io/v1')
     .setProject(process.env.EXPO_PUBLIC_APPWRITE_PROJECT || '')
     .setPlatform(process.env.EXPO_PUBLIC_APPWRITE_PLATFROM || '');
 export const databases=new Databases(client)
@@ -12,6 +15,7 @@ export const config={
     database:process.env.EXPO_PUBLIC_APPWRITE_DATABASE || '',
     accountSession:'6707a05800140d008a02',
     account:'66b09b570034158307ad',
+    supplier:'66adf35300258c35865d',
     accountUser:'66f6d4d1003bc312bdf3',
     transactions:'66a6c74f00196e1fa95b',
     payments:'66a6c7f8003df82e5105',
@@ -20,6 +24,7 @@ export const config={
     reports:'671105b5003c7b3bc573',
     store:'66a6c686000201cfb22a',
     verificationToken:'671afa70000ba184b603',
+    subscriptin:'66ac9636002ccba4aa52',
     profileBucket:process.env.EXPO_PUBLIC_APPWRITE_PROFILE_PUCKET || ''
 }
 export const storage=new Storage(client)
@@ -39,7 +44,8 @@ async function save(key:string, value:string) {
         username,
         password,
         name,
-        avatar:avatarUrl
+        avatar:avatarUrl,
+        type:'NONE'
       }
     )
     if(data){
@@ -158,6 +164,45 @@ export const updateAccount=async(id:string,name:string,phone:string)=>{
       }
 }
 
+
+export const updateAccountDeviceToken=async(id:string,deviceToken:string)=>{
+
+  try {
+    const data=await databases.updateDocument(
+      config.database,
+      config.account,
+      id,{
+        deviceToken       
+      }
+    )
+  return data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const getAccountByEmail=async(email:string)=>{
+
+  const data=await databases.listDocuments(
+    config.database,
+    config.account,
+   [
+    Query.equal('email',email)
+   ]
+  )
+  const account:AccountType={
+    id:data.documents[0].$id,
+    name:data.documents[0].name,
+    avatar:data.documents[0].avatar,
+    type:data.documents[0].type,
+    phone:data.documents[0].phone,
+    username:data.documents[0].username,
+    email:data.documents[0].email,
+    verified:data.documents[0].verified
+  }
+
+  return account
+}
 
 export const updateAccountType=async(type:'CLIENT'|'SUPPLIER',id:string)=>{
 
@@ -366,7 +411,17 @@ export const createRequest=async(account:AccountType,user:string)=>{
       
     }
 }
-
+export const deleteRequest=async(id:string)=>{
+try {
+  await databases.deleteDocument(
+    config.database,
+    config.accountUser,
+    id
+  )
+} catch (error) {
+  
+}
+}
 export const createEmail=async(id:string,email:string)=>{
    const data=await databases.updateDocument(
     config.database,
@@ -377,9 +432,17 @@ export const createEmail=async(id:string,email:string)=>{
     }
   
    )
-  
-
-   return data
+   const updatedAccount:AccountType={
+    id:data.$id,
+    name:data.name,
+    avatar:data.avatar,
+    type:data.type,
+    phone:data.phone,
+    username:data.username,
+    email:data.email,
+    verified:data.verified
+  }
+   return updatedAccount
 
 
 }
@@ -387,13 +450,13 @@ export const createEmail=async(id:string,email:string)=>{
 export const sendOtp = async (account: string, type: 'account' | 'password') => {
   
   const response = await deleteOldToken(account);
-  const timeZone = 'Africa/Algiers';
-  const zonedDate = toZonedTime(new Date(), timeZone);
+  
   
   const token = Math.floor(1000 + Math.random() * 9000).toString();
-
+  const timeZone = 'Africa/Algiers';
+  const zonedDate = toZonedTime(new Date(), timeZone);
   const expire = new Date(zonedDate);
-  expire.setHours(expire.getHours() + 1);
+  expire.setHours(expire.getHours() + 2);
 
   const data = await databases.createDocument(
     config.database,
@@ -413,7 +476,8 @@ export const sendOtp = async (account: string, type: 'account' | 'password') => 
 };
 
 
-export const verify=async(otp:string,accountId:string)=>{
+
+export const verifyAccountOtp=async(otp:string,accountId:string)=>{
 
   const data=await databases.listDocuments(
     config.database,
@@ -432,14 +496,16 @@ export const verify=async(otp:string,accountId:string)=>{
     const timeZone = 'Africa/Algiers';
     const currentDate = toZonedTime(new Date(), timeZone);
     const expire=data.documents[0].expire
-    
-     if(expire<currentDate){
-      throw new Error('token exipred')
+    const expireDateFormat = format(expire, 'yyyy-MM-dd HH:mm:ss');
+    const currentDateFormat = format(currentDate, 'yyyy-MM-dd HH:mm:ss');
+
+     if(expireDateFormat<currentDateFormat){
+      throw new Error('token expired')
      }else{
      const data= await updateVerification(accountId)
      if(data){
-      await deleteOldToken(accountId)
-      return data.verified
+      const response =await deleteOldToken(accountId)
+      return response
      }
      
      }
@@ -449,6 +515,40 @@ export const verify=async(otp:string,accountId:string)=>{
 
 }
 
+
+export const verifyPasswordOtp=async(otp:string,accountId:string)=>{
+
+  const data=await databases.listDocuments(
+    config.database,
+     config.verificationToken,
+     [
+     Query.and(
+      
+      [
+        Query.equal('token',otp),
+        Query.equal('account',accountId),
+        Query.equal('type','password')
+      ]
+     )
+     ]
+  )
+  if(data.documents[0]){
+    const timeZone = 'Africa/Algiers';
+    const currentDate = toZonedTime(new Date(), timeZone);
+    const expire=data.documents[0].expire
+    const expireDateFormat = format(expire, 'yyyy-MM-dd HH:mm:ss');
+    const currentDateFormat = format(currentDate, 'yyyy-MM-dd HH:mm:ss');
+     if(expireDateFormat<currentDateFormat){
+      throw new Error('token expired')
+     }else{
+      const response =await deleteOldToken(accountId)
+      return response 
+     }
+  }else{
+    throw new Error('token does not exist')
+  }
+
+}
 
 export const updateVerification=async(id:string)=>{
   const data=await databases.updateDocument(
@@ -506,28 +606,100 @@ try {
 }
 }
 
-export const sendVerificationCode = async (code:string, email:string) => {
-  // Create a FormData object
+export const sendVerificationCode = async (code:string, email:string,type:'password'| 'account') => {
+  
   const formData = new FormData();
   formData.append('code', code);
   formData.append('email', email);
-
+ let apiUrl
+ if(type==='account'){
+  apiUrl="https://www.cridi.online//api/verification"
+ }else{
+apiUrl="https://www.cridi.online//api/reset-password"
+ }
   try {
-      // Send POST request
-      const response = await fetch('https://www.cridi.online/api/verification', {
-          method: 'POST',
-          body: formData,
-      });
+    const response = await axios.post(apiUrl, formData, {
+      headers: {
+          'Content-Type': 'multipart/form-data',
+          'cridi-api-key':process.env.EXPO_PUBLIC_CRIDI_API_KEY
+      },
+  });
 
-      // Check if the request was successful
-      if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+    console.log('Response:', response.data);
+} catch (error:any) {
+    console.error(error.message);
+}
+};
+
+export const getSubscription=async(user:string)=>{
+    try {
+      const data=await databases.listDocuments(
+        config.database,
+        config.subscriptin,
+     [ 
+      Query.equal('user',user),
+      Query.limit(1),
+      Query.orderDesc('$createdAt')
+      ]
+      )
+     const subscription:SubscriptionType={
+      type:data.documents[0].type,
+      expire:format(data.documents[0].subscriptionDate, 'yyyy-MM-dd')
+     }
+
+
+     return subscription
+    } catch (error) {
+      
+    }
+}
+
+
+export const createSupplier=async(account:string,supplier:SupplierType)=>{
+        const {description,field,state}=supplier
+       const data=await databases.createDocument(
+        config.database,
+         config.supplier,
+         ID.unique(),
+         {
+          account,
+           state:state.id,
+           field:field.id,
+           description
+         }
+       )
+
+      const newSupplier:SupplierType={
+        id:data.$id,
+        field:data.field,
+        state:data.state,
+        description:data.description
       }
 
-      // Parse the JSON response
-      const data = await response.json();
-      console.log('Success:', data);
-  } catch (error) {
-      console.error('Error:', error);
-  }
-};
+      return newSupplier
+}
+
+
+
+export const updateSupplier=async(supplier:SupplierType)=>{
+  const {description,field,state,id}=supplier
+ const data=await databases.updateDocument(
+  config.database,
+   config.supplier,
+   id,
+   {
+     state:state.id,
+     field:field.id,
+     description
+   }
+ )
+
+const updatedSupplier:SupplierType={
+  id:data.$id,
+  field:supplierFields.find(item=>item.id===data.field) || supplierFields[0],
+  state:states.find(item=>item.id===data.state) || states[0],
+  description:data.description
+}
+
+return updatedSupplier
+}

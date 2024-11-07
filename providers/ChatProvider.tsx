@@ -3,7 +3,6 @@ import React, { ReactNode, useEffect, useState } from 'react'
 import { StreamChat } from 'stream-chat';
 import useAccountStore from '@/stores/useAccountStore';
 import  {Chat, OverlayProvider, Streami18n} from 'stream-chat-expo'
-import Loader from '@/components/ui/Loader';
 import useLanguageStore from '@/stores/useLanguageStore';
 import useNotificationsStore from '@/stores/useNotificationsStore';
 
@@ -55,6 +54,10 @@ const ChatProvider = ({children}:{children:ReactNode}) => {
 
     !isConnected &&  connect()
 
+
+    return ()=>{
+      if(!isConnected) client.disconnectUser()
+    }
      
     }, [account])
    
@@ -85,7 +88,7 @@ streami18n.setLanguage('fr');
    }
    }, [language])
    
-    if(isLoading) return <Loader/>
+    
   return (
    <>
    <OverlayProvider value={{style:{colors:{accent_blue:'#059669'}}}} i18nInstance={streami18n} >

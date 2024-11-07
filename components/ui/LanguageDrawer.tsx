@@ -5,6 +5,7 @@ import { LanguageType } from '@/types'
 import { languageData } from '@/constants/Language'
 import useLanguageStore from '@/stores/useLanguageStore'
 import { FontAwesome } from '@expo/vector-icons'
+import BottomSheet from './BottomSheet'
 
 const LanguageDrawer = ({open,setOpen}:{open:boolean,setOpen:(open:boolean)=>void}) => {
     const {language,setLanguage}=useLanguageStore();
@@ -14,7 +15,7 @@ const LanguageDrawer = ({open,setOpen}:{open:boolean,setOpen:(open:boolean)=>voi
     setOpen(false)
    }
   return (
-    <Drawer 
+    <BottomSheet 
     open={open}
     setOpen={setOpen}
     title={language?.id === 'en' ? 'Language' : language?.id === 'fr' ? 'Langue' : 'اللغة'} 
@@ -38,7 +39,7 @@ const LanguageDrawer = ({open,setOpen}:{open:boolean,setOpen:(open:boolean)=>voi
             ))
         }
        </View>
-    </Drawer>
+    </BottomSheet>
   )
 }
 

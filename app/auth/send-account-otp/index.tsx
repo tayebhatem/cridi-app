@@ -8,14 +8,18 @@ import { createEmail, sendOtp, sendVerificationCode } from '@/libs/appwrite'; //
 import Alert from '@/components/ui/Alert';
 import useLanguageStore from '@/stores/useLanguageStore';
 import useAccountStore from '@/stores/useAccountStore';
+import Logo from '@/components/ui/Logo';
+import ErrorMessage from '@/components/ui/ErrorMessage';
+import { useToast } from 'react-native-toast-notifications';
 
 const SendAccountOtpScreen = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState('');
   const { language } = useLanguageStore(); 
-  const {account}=useAccountStore()
-  const [registerForm, setRegisterForm] = useState({
+  const toast = useToast();
+  const {account,setAccount}=useAccountStore()
+  const [emailForm, setEmailForm] = useState({
     email: {
       value: '',
       error: '',
@@ -32,8 +36,8 @@ const SendAccountOtpScreen = () => {
     let valid = true;
 
     // Validate email
-    if (!validateEmail(registerForm.email.value)) {
-      setRegisterForm((prevState) => ({
+    if (!validateEmail(emailForm.email.value)) {
+        setEmailForm((prevState) => ({
         ...prevState,
         email: {
           ...prevState.email,
@@ -44,8 +48,8 @@ const SendAccountOtpScreen = () => {
     }
 
     // Ensure email field isn't empty
-    if (registerForm.email.value.trim().length === 0) {
-      setRegisterForm((prevState) => ({
+    if (emailForm.email.value.trim().length === 0) {
+        setEmailForm((prevState) => ({
         ...prevState,
         email: {
           ...prevState.email,
@@ -65,12 +69,15 @@ const SendAccountOtpScreen = () => {
     if (isValid) {
       try {
        if(account){
-      const data= await createEmail(account.id,registerForm.email.value)
+      const data= await createEmail(account.id,emailForm.email.value)
       if(data){
-       const tokenData=await sendOtp(data.$id,'account')
+       
+        setAccount(data)
+       const tokenData=await sendOtp(data.id,'account')
       if(tokenData) {
-       await sendVerificationCode(tokenData.token,data.email)
-         router.push('../auth/verify-account')
+       
+       await sendVerificationCode(tokenData.token,emailForm.email.value,'account')
+         router.push('/auth/verify-account-otp')
         }; 
       }
        
@@ -78,9 +85,38 @@ const SendAccountOtpScreen = () => {
       } catch (error) {
         
         if (error instanceof Error) {
-            console.log(error.message)
-          //setError(language?.id === 'en' ? error.message : language?.id === 'fr' ? 'Une erreur s\'est produite.' : 'حدث خطأ ما.');
-          //setOpen(true);
+            
+            if(error.message==='Document with the requested ID already exists. Try again with a different ID or use ID.unique() to generate a unique ID.'){
+              const errorMessage = language?.id === 'en' 
+              ? 'Email already exists' 
+              : language?.id === 'fr' 
+              ? "E-mail existe déjà." 
+              : "البريد الإكتروني موجود.";
+              setEmailForm((prevState) => ({
+                ...prevState,
+                email: {
+                  ...prevState.email,
+                  error:errorMessage,
+                },
+              }));
+            }else{
+              if(error.message==='Network request failed') {
+           
+                const errorMessage=language?.id === 'en' ? 'Network Error' : language?.id === 'fr' ?  'Erreur Réseau' : 'خطأ في الشبكة'
+                toast.show(errorMessage,{
+                  type:"danger"
+                });
+            
+              }else {
+              
+                const errorMessage=language?.id === 'en' ? error.message : language?.id === 'fr' ? 'Une erreur s\'est produite.' : 'حدث خطأ ما.'
+                toast.show(errorMessage,{
+                  type:"danger"
+                });
+            
+              }
+            }
+       
         }
       }
     }
@@ -88,47 +124,39 @@ const SendAccountOtpScreen = () => {
 
   return (
     <>
-      <SafeAreaView className="bg-white p-4 h-full ">
-        <ScrollView className='h-full space-y-2' showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false}>
-          <View className='w-full items-center'>
-            <Image source={require('../../../assets/images/logo.png')} resizeMode='contain' className='w-24 h-24 ' />
-          </View>
+      <SafeAreaView className="bg-white p-4 h-full space-y-4 ">
 
           <View>
             <Text className="text-2xl font-kufi-semi-bold">
-              {language?.id === 'en' ? 'Verify Account' : language?.id === 'fr' ? 'Vérifier le compte' : 'تحقق من الحساب'}
+              {language?.id === 'en' ? 'Verify account' : language?.id === 'fr' ? 'Vérifier le compte' : 'تحقق من الحساب'}
             </Text>
             <Text className="text-neutral-400 font-kufi leading-6">
               {language?.id === 'en' ? 'Please enter your email to receive an OTP.' : language?.id === 'fr' ? 'Veuillez entrer votre email pour recevoir un OTP.' : 'يرجى إدخال بريدك الإلكتروني لتلقي رمز التحقق.'}
             </Text>
           </View>
           
-          <Input
+         <View>
+         <Input
             title={language?.id === 'en' ? 'Email' : language?.id === 'fr' ? 'E-mail' : 'البريد الإلكتروني'}
             type="email"
             placeholder='johndoe@example.com'
-            value={registerForm.email.value}
-            error={registerForm.email.error}
-            onChange={(value) => setRegisterForm((prev) => ({
+            value={emailForm.email.value}
+            error={emailForm.email.error}
+            onChange={(value) => setEmailForm((prev) => ({
               ...prev,
               email: { value, error: '' }
             }))}
           />
-          {registerForm.email.error && (
-            <Text className='text-red-500 font-kufi leading-5'>{registerForm.email.error}</Text>
-          )}
+           <ErrorMessage error={emailForm.email.error }/>
+         </View>
         
-          <Button title={language?.id === 'en' ? 'Send OTP' : language?.id === 'fr' ? 'Envoyer OTP' : 'إرسال رمز التحقق'} onChange={handleSubmit} />
+        
+        <View>
+        <Button title={language?.id === 'en' ? 'Send' : language?.id === 'fr' ? 'Envoyer' : 'إرسال'} onChange={handleSubmit} />
+        </View>
 
-          <View className={`flex ${language?.id==='ar'?'flex-row-reverse':'flex-row'} items-center space-x-2 justify-center `}>
-            <Text className='font-kufi-medium text-center text-base'>
-              {language?.id === 'en' ? 'Already verified?' : language?.id === 'fr' ? 'Déjà vérifié?' : 'هل تم التحقق بالفعل؟'}
-            </Text>
-            <Link href={'../sign-in'} className='font-kufi-semi-bold text-primary-500 text-base'>
-              {language?.id === 'en' ? 'Login' : language?.id === 'fr' ? 'Connexion' : 'تسجيل الدخول'}
-            </Link>
-          </View>
-        </ScrollView>
+       
+       
       </SafeAreaView>
 
       <Alert
