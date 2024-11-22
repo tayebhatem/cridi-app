@@ -1,36 +1,39 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { DebtsType } from '@/types'
-import { Ionicons } from '@expo/vector-icons'
-import useLanguageStore from '@/stores/useLanguageStore'
+import { View, Text } from "react-native";
+import React from "react";
+import { DebtsType } from "@/types";
+import { Avatar } from "tamagui";
 
-const DebtItem = ({debt}:{debt:DebtsType}) => {
-  const{language}=useLanguageStore()
+const DebtItem = ({ debt }: { debt: DebtsType }) => {
+  const amount = new Intl.NumberFormat("fr-FR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(debt.amount as number);
   return (
-    <View key={debt.id} className='flex flex-row justify-between py-2 border-b border-neutral-200 dark:border-dark-200  '>
-    <View className='space-y-2'>
-    <Text className='text-xl font-kufi-medium leading-8 text-black dark:text-white'>{debt.amount.toFixed(2)} DA</Text>
-   <View className='flex flex-row items-center space-x-2'>
-  
-   <View className='flex flex-row items-center space-x-2' >
-  <Ionicons name='calendar-clear-outline' color={'#a3a3a3'} size={14}/>
-   <Text className='text-neutral-400'>{debt.date}</Text>
-   </View>
-  
-   <View className='flex flex-row items-center space-x-2' >
-   <Ionicons name='time-outline' color={'#a3a3a3'} size={14}/>
-   <Text className='text-neutral-400'>{debt.time}</Text>
-   </View>
-   
-   </View>
-    </View>
-    <Text className={`rounded-md p-2 self-start font-kufi-medium leading-6 capitalize ${debt.archived ?"bg-green-50 text-green-500":"bg-red-50 text-red-500"}`}>
-      {debt.archived ?language?.id==='en'? "paid":language?.id==='fr'?"payé":"مدفوع":
-      language?.id==='en'? "unpaid":language?.id==='fr'?"impayé":"غير مدفوع"
-      }
-    </Text>
-      </View>
-  )
-}
+    <View
+      key={debt.id}
+      className="flex flex-row justify-between py-2  space-y-2  "
+    >
+      <View className="flex flex-row">
+        <Avatar circular size="$4" className="border border-neutral-200">
+          <Avatar.Image accessibilityLabel="Cam" src={debt.storeImage} />
+          <Avatar.Fallback backgroundColor="$white0" />
+        </Avatar>
+        <View>
+          <Text className="font-medium text-base">{debt.storeName}</Text>
+          <View className="flex flex-row items-center space-x-2">
+            <Text className="text-neutral-400 text-xs">{debt.date}</Text>
 
-export default DebtItem
+            <Text className="text-neutral-400 text-xs">{debt.time}</Text>
+          </View>
+        </View>
+      </View>
+      <View className="">
+        <Text className="text-base font-medium leading-8 text-black dark:text-white">
+          {amount} DA
+        </Text>
+      </View>
+    </View>
+  );
+};
+
+export default DebtItem;

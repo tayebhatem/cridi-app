@@ -1,40 +1,40 @@
-import { config, databases } from "@/libs/appwrite"
-import { PaymentsType } from "@/types"
-import { Query } from "react-native-appwrite"
+import { config, databases } from "@/libs/appwrite";
+import { PaymentsType } from "@/types";
+import { Query } from "react-native-appwrite";
 
-export const getPayments=async(accountUser:string,limit:number)=>{
-    try {
-      const data=await  databases.listDocuments(
-        config.database,
-        config.transactions,
-        [
-            Query.limit(limit),
-            Query.orderDesc('$createdAt'),
-            Query.and([
-                Query.equal('accountUser',accountUser),
-                Query.equal('hidden',false),
-                Query.isNotNull('payment'),
-            ])
+export const getPayments = async (accountUser: string, limit: number) => {
+  try {
+    const data = await databases.listDocuments(
+      config.database,
+      config.transactions,
+      [
+        Query.limit(limit),
+        Query.orderDesc("$createdAt"),
+        Query.and([
+          Query.equal("accountUser", accountUser),
+          Query.equal("hidden", false),
+          Query.isNotNull("payment"),
+        ]),
+      ]
+    );
 
-        ]
-      )
+    const payments = data.documents.map((item) => {
+      const transaction: PaymentsType = {
+        id: item.$id,
+        amount: item.amount,
+        date: item.date,
+        time: item.time,
+        storeName: item.accountUser.user.name,
+        storeImage: item.accountUser.user.avatar,
+        newAmount: item.payment.newAmount,
+        oldAmount: item.payment.oldAmount,
+      };
 
-      const payments=data.documents.map((item)=>{
-        const transaction:PaymentsType={
-            id:item.$id,
-            amount:item.amount,
-            date:item.date,
-            time:item.time,
-            read:item.read,
-            newAmount:item.payment.newAmount,
-            oldAmount:item.payment.oldAmount
-        }
+      return transaction;
+    });
 
-        return transaction
-      })
-
-      return payments
-    } catch (error) {
-      console.log(error)
-    }
+    return payments;
+  } catch (error) {
+    console.log(error);
   }
+};

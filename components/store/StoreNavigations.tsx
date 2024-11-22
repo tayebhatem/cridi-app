@@ -1,76 +1,93 @@
-import { View, Text, TouchableOpacity } from 'react-native'
-import React from 'react'
-import { Ionicons, MaterialIcons } from '@expo/vector-icons'
-import { useRouter } from 'expo-router'
-import useLanguageStore from '@/stores/useLanguageStore'
-import { useChatContext } from 'stream-chat-expo'
-import useAccountStore from '@/stores/useAccountStore'
-import useStore from '@/stores/useStore'
+import { View, Text, TouchableOpacity, Image, FlatList } from "react-native";
+import React from "react";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import useLanguageStore from "@/stores/useLanguageStore";
+import { useChatContext } from "stream-chat-expo";
+import useAccountStore from "@/stores/useAccountStore";
+import useStore from "@/stores/useStore";
+import { Card } from "tamagui";
 
-const StoreNavigations = ({id}:{id:string | undefined}) => {
-  const router=useRouter()
-  const {language}=useLanguageStore()
-  const{client}=useChatContext()
-  const {account}=useAccountStore()
-  const{store}=useStore()
+const StoreNavigations = ({ id }: { id: string | undefined }) => {
+  const router = useRouter();
+  const { language } = useLanguageStore();
 
-  const startChat=async()=>{
-    try {
-     if(account && store){
-      
-      const channel=client.channel('messaging',
-        {
-          members:[account?.id,store?.id]
-        })
-   await channel.watch()
-  
-  router.push(`../conversation/${channel.cid}`)
-     }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  
+  const navData = [
+    {
+      name: {
+        en: "debts",
+        fr: "crédits",
+        ar: "ديون",
+      },
+      image: require("@/assets/images/dashboard/debts.png"),
+      link: `../debts/${id}`,
+    },
+    {
+      name: {
+        en: "Payments",
+        fr: "Paiements",
+        ar: "الدفعات",
+      },
+      image: require("@/assets/images/dashboard/payment.png"),
+      link: `../payments/${id}`,
+    },
+    {
+      name: {
+        en: "products",
+        fr: "produits",
+        ar: "منتوجات",
+      },
+      image: require("@/assets/images/dashboard/product.png"),
+      link: "/product",
+    },
+    {
+      name: {
+        en: "publications",
+        fr: "publications",
+        ar: "منشورات",
+      },
+      image: require("@/assets/images/dashboard/post.png"),
+      link: "/posts",
+    },
+  ];
+
   return (
-    <View className='flex flex-row items-center gap-x-6 '>
-
-    <View className='flex justify-center items-center'>
-    <TouchableOpacity 
-    onPress={()=>router.push(`../debts/${id}`)}
-    activeOpacity={0.8} 
-    className='p-3 w-12 h-12 flex items-center justify-center rounded-full bg-green-100'>
-    <Ionicons  name='receipt-outline' size={24} color={'#16a34a'}/>
-    </TouchableOpacity>
-    <Text className='font-kufi text-center text-green-600'>
-      {language?.id==='en'?"Debts":language?.id==='fr'?"Crédits":"الديون"}
-    </Text>
-    </View >
-
-    <View className='flex justify-center items-center'>
-    <TouchableOpacity 
-     onPress={()=>router.push(`../payments/${id}`)}
-     activeOpacity={0.8} 
-    className='p-3 w-12 h-12 flex items-center justify-center  rounded-full bg-pink-100 text-pink-600'>
-    <MaterialIcons name="currency-exchange" size={24} color="#db2777" />
-    </TouchableOpacity>
-    <Text className='font-kufi text-center text-pink-600'>
-    {language?.id==='en'?"Payments":language?.id==='fr'?"Paiements":"الدفعات"}
-    </Text>
+    <View className="">
+      <FlatList
+        data={navData}
+        contentContainerStyle={{ gap: 0 }}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        renderItem={(item) => (
+          <View className="items-center justify-center  space-y-3 px-3 ">
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => router.push(`../${item.item.link}`)}
+            >
+              <Card
+                elevationAndroid={1}
+                className="bg-primary-100 p-3 justify-center items-center "
+              >
+                <Image
+                  source={item.item.image}
+                  resizeMode="contain"
+                  className="w-10 h-10"
+                />
+              </Card>
+            </TouchableOpacity>
+            <Text className="text-xs capitalize font-kufi-medium ">
+              {language?.id === "en"
+                ? item.item.name.en
+                : language?.id === "fr"
+                ? item.item.name.fr
+                : item.item.name.ar}
+            </Text>
+          </View>
+        )}
+      />
     </View>
+  );
+};
 
-    <View className='flex justify-center items-center '>
-    <TouchableOpacity 
-   onPress={startChat}
-    activeOpacity={0.8} 
-    className='p-3 w-12 h-12 flex items-center justify-center  rounded-full bg-blue-100 text-blue-600 '>
-    <Ionicons name='chatbubble-ellipses-outline' size={24} color={'#2563eb'}/>
-    </TouchableOpacity>
-    <Text className='font-kufi text-center text-blue-600'>
-    {language?.id==='en'?"Contact":language?.id==='fr'?"Contact":"تواصل"}
-    </Text>
-    </View>
-     </View>
-  )
-}
-
-export default StoreNavigations
+export default StoreNavigations;

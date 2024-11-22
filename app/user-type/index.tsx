@@ -3,62 +3,70 @@ import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FontAwesome5, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import Button from "@/components/ui/Button";
+
 import useLanguageStore from "@/stores/useLanguageStore";
 import { updateAccountType } from "@/libs/appwrite";
 import useAccountStore from "@/stores/useAccountStore";
 import Logo from "@/components/ui/Logo";
+import { Button, Spinner } from "tamagui";
 
 const UserTypeScreen = () => {
-  const [category, setCategory] = useState<'CLIENT' | 'SUPPLIER'>('CLIENT');
+  const [category, setCategory] = useState<"CLIENT" | "SUPPLIER">("CLIENT");
   const router = useRouter();
   const { language } = useLanguageStore();
-const {account,setAccount}=useAccountStore()
+  const { account, setAccount } = useAccountStore();
+  const [isLoading, setisLoading] = useState(false);
   const submit = async () => {
-    try {
-    
-     if(account){
-       const updatedAccount= await updateAccountType(category,account.id)
-      if(updatedAccount){
-        setAccount(updatedAccount)
-        if(updatedAccount.type==='SUPPLIER'){
-          router.push('/supplier');
+    if (account) {
+      setisLoading(true);
+      try {
+        const updatedAccount = await updateAccountType(category, account.id);
+        if (updatedAccount) {
+          setAccount(updatedAccount);
+          if (updatedAccount.type === "SUPPLIER") {
+            router.push("/supplier");
+          }
+          if (updatedAccount.type === "CLIENT") {
+            router.push("/dashboard");
+          }
         }
-        if(updatedAccount.type==='CLIENT'){
-          router.push('/dashboard');
-        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setisLoading(false);
       }
-     }
-    } catch (error) {
-      console.log(error);
     }
   };
 
   return (
     <SafeAreaView className="bg-white h-full w-full px-6 justify-center">
-   
-      <Text  className="text-2xl font-kufi-semi-bold">
-        {language?.id === 'en' ? 'Choose Account Category' : language?.id === 'fr' ? 'Choisissez la catégorie de compte' : 'اختر فئة الحساب'}
+      <Text className="text-2xl font-kufi-semi-bold">
+        {language?.id === "en"
+          ? "Choose Account Category"
+          : language?.id === "fr"
+          ? "Choisissez la catégorie de compte"
+          : "اختر فئة الحساب"}
       </Text>
 
       <Text className="text-neutral-400 font-kufi leading-6">
-        {language?.id === 'en' 
-          ? 'Please select the appropriate account category to continue.' 
-          : language?.id === 'fr' 
-          ? 'Veuillez sélectionner la catégorie de compte appropriée pour continuer.' 
-          : 'يرجى اختيار الفئة المناسبة للحساب للمتابعة.'
-        }
+        {language?.id === "en"
+          ? "Please select the appropriate account category to continue."
+          : language?.id === "fr"
+          ? "Veuillez sélectionner la catégorie de compte appropriée pour continuer."
+          : "يرجى اختيار الفئة المناسبة للحساب للمتابعة."}
       </Text>
 
       <View className="flex-row space-x-3 my-3">
         <TouchableOpacity
           activeOpacity={0.9}
-          onPress={() => setCategory('SUPPLIER')}
+          onPress={() => setCategory("SUPPLIER")}
           className={`relative flex-1 border rounded-md p-3 items-center justify-center space-y-4 ${
-            category === 'SUPPLIER' ? "border-primary-500 border-2" : "border-neutral-200"
+            category === "SUPPLIER"
+              ? "border-primary-500 border-2"
+              : "border-neutral-200"
           }`}
         >
-          {category === 'SUPPLIER' && (
+          {category === "SUPPLIER" && (
             <View className="absolute -top-3 -right-2 bg-white">
               <FontAwesome name="check-circle" size={24} color="#059669" />
             </View>
@@ -70,22 +78,32 @@ const {account,setAccount}=useAccountStore()
 
           <View>
             <Text className="text-2xl font-kufi-medium text-center">
-              {language?.id === 'en' ? 'Supplier' : language?.id === 'fr' ? 'Fournisseur' : 'مورد'}
+              {language?.id === "en"
+                ? "Supplier"
+                : language?.id === "fr"
+                ? "Fournisseur"
+                : "مورد"}
             </Text>
             <Text className="text-neutral-400 font-kufi text-center text-sm">
-              {language?.id === 'en' ? 'I represent a business and offer supplies to stores.' : language?.id === 'fr' ? 'Je représente une entreprise et je fournis des magasins.' : 'أمثل شركة وأوفر إمدادات للمتاجر.'}
+              {language?.id === "en"
+                ? "I represent a business and offer supplies to stores."
+                : language?.id === "fr"
+                ? "Je représente une entreprise et je fournis des magasins."
+                : "أمثل شركة وأوفر إمدادات للمتاجر."}
             </Text>
           </View>
         </TouchableOpacity>
 
         <TouchableOpacity
           activeOpacity={0.9}
-          onPress={() => setCategory('CLIENT')}
+          onPress={() => setCategory("CLIENT")}
           className={`relative flex-1 border rounded-md p-3 items-center justify-center space-y-4 ${
-            category === 'CLIENT' ? "border-primary-500 border-2" : "border-neutral-200"
+            category === "CLIENT"
+              ? "border-primary-500 border-2"
+              : "border-neutral-200"
           }`}
         >
-          {category === 'CLIENT' && (
+          {category === "CLIENT" && (
             <View className="absolute -top-3 -right-2 bg-white">
               <FontAwesome name="check-circle" size={24} color="#059669" />
             </View>
@@ -97,18 +115,40 @@ const {account,setAccount}=useAccountStore()
 
           <View>
             <Text className="text-2xl font-kufi-medium text-center">
-              {language?.id === 'en' ? 'Customer' : language?.id === 'fr' ? 'Client' : 'زبون'}
+              {language?.id === "en"
+                ? "Customer"
+                : language?.id === "fr"
+                ? "Client"
+                : "زبون"}
             </Text>
             <Text className="text-neutral-400 font-kufi text-center text-sm">
-              {language?.id === 'en' ? 'I am looking for products and services from stores.' : language?.id === 'fr' ? 'Je recherche des produits et des services dans les magasins.' : 'أبحث عن منتجات وخدمات من المتاجر.'}
+              {language?.id === "en"
+                ? "I am looking for products and services from stores."
+                : language?.id === "fr"
+                ? "Je recherche des produits et des services dans les magasins."
+                : "أبحث عن منتجات وخدمات من المتاجر."}
             </Text>
           </View>
         </TouchableOpacity>
       </View>
 
-    <View>
-    <Button title={language?.id === 'en' ? 'Save' : language?.id === 'fr' ? 'Enregistrer' : 'حفظ'} onChange={submit} />
-    </View>
+      <View>
+        <Button
+          onPress={submit}
+          className="bg-primary-500 text-white"
+          size={"$6"}
+          disabled={isLoading}
+          icon={isLoading ? () => <Spinner color={"white"} /> : undefined}
+        >
+          <Text className="text-white font-kufi-medium ">
+            {language?.id === "en"
+              ? "Save"
+              : language?.id === "fr"
+              ? "Enregistrer"
+              : "حفظ"}
+          </Text>
+        </Button>
+      </View>
     </SafeAreaView>
   );
 };

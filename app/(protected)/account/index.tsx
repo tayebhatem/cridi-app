@@ -1,25 +1,13 @@
-
-import React, { useEffect, useState } from 'react'
-import useAccountStore from '@/stores/useAccountStore'
-import CustomerAccount from '@/components/account/CustomerAccount'
-import SupplierAccount from '@/components/account/SupplierAccount'
-
-
-
+import React, { useEffect, useState } from "react";
+import useAccountStore from "@/stores/useAccountStore";
+import CustomerAccount from "@/components/customer/CustomerAccount";
+import SupplierAccount from "@/components/supplier/SupplierAccount";
 
 const AccountScreen = () => {
-    const {account}=useAccountStore();
-  
-   
-   
-  return (
-<>
-{
-  account?.type==='CLIENT'? <CustomerAccount/>:
-  <SupplierAccount/>
-}
-</>
-  )
-}
+  const { account } = useAccountStore();
 
-export default AccountScreen
+  if (account?.type === "SUPPLIER") return <SupplierAccount />;
+  else return <CustomerAccount />;
+};
+
+export default AccountScreen;

@@ -1,16 +1,16 @@
-import { View, Text } from 'react-native'
-import React, { ReactNode } from 'react'
-import { Card } from 'tamagui'
+import { Card, CardProps, ViewProps } from "tamagui";
+import React, { ReactNode } from "react";
 
-const CardLayout = ({children}:{children:ReactNode}) => {
-  return (
-    <View >
-      <Card className='p-4 bg-white'>
-      {children}
-      </Card>
-      
-    </View>
-  )
+interface CardLayoutProps extends CardProps {
+  children?: ReactNode;
 }
 
-export default CardLayout
+const CardLayout: React.FC<CardLayoutProps> = ({ children, ...rest }) => {
+  return (
+    <Card className="p-4 bg-white" {...rest}>
+      {children}
+    </Card>
+  );
+};
+
+export default CardLayout;
