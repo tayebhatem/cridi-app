@@ -43,7 +43,8 @@ export const getTotalDebts = async (accountUser: string) => {
       config.database,
       config.transactions,
       [
-        Query.limit(100),
+        Query.limit(200),
+        Query.select(['amount']),
         Query.and([
           Query.equal("accountUser", accountUser),
           Query.equal("hidden", false),

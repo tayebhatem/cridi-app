@@ -11,7 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Input from "@/components/ui/Input";
 import { Check as CheckIcon } from "@tamagui/lucide-icons";
 import { Link, useRouter } from "expo-router";
-import { createAccount, login } from "@/libs/appwrite";
+import { createAccount } from "@/libs/appwrite";
 import Alert from "@/components/ui/Alert";
 import useLanguageStore from "@/stores/useLanguageStore";
 import Logo from "@/components/ui/Logo";

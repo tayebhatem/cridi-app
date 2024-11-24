@@ -20,6 +20,7 @@ import CardLayout from "@/components/ui/CardLayout";
 import { format, formatDate } from "date-fns";
 import TotaleCard from "@/components/debts/TotaleCard";
 import EmptyList from "@/components/ui/EmptyList";
+import { Spinner } from "tamagui";
 const DebtsScreen = () => {
   const { id } = useLocalSearchParams();
 
@@ -72,7 +73,7 @@ const DebtsScreen = () => {
   const fetchDebts = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await getDebsts(id as string, 80);
+      const data = await getDebsts(id as string, 200);
       setDebts(data);
       setData(data);
       setRange(1);
@@ -113,7 +114,12 @@ const DebtsScreen = () => {
 
   return (
     <View className="px-4 space-y-4">
-      <View>
+      {
+        isLoading?<View className="w-full h-full bg-neutral-100 justify-center items-center">
+          <Spinner size="large"/>
+        </View>:
+        <>
+        <View>
         <TotaleCard
           total={totalDebts}
           subText={
@@ -188,6 +194,9 @@ const DebtsScreen = () => {
           </CardLayout>
         </View>
       </View>
+        </>
+
+      }
     </View>
   );
 };

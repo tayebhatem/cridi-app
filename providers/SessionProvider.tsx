@@ -13,6 +13,7 @@ const SessionProvider = ({ children }:{children:ReactNode}) => {
   if (!session) {
     return <Redirect href={"/auth/sign-in"} />;
   }else{
+    
     if(session.account.type==='SUPPLIER' && !session.account.supplier){
       return <Redirect href={"/supplier"} />;
     }

@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Input from "@/components/ui/Input";
 
 import { Link, useRouter } from "expo-router";
-import { login } from "@/libs/appwrite";
+import { login, sendOtp, sendVerificationCode } from "@/libs/appwrite";
 import Alert from "@/components/ui/Alert";
 import useLanguageStore from "@/stores/useLanguageStore";
 import Logo from "@/components/ui/Logo";
@@ -142,8 +142,22 @@ const SignInScreen = () => {
                 ) || states[0],
             });
           }
+        
+         if(session.account.verified){
           router.push("../../dashboard");
-          resetForm();
+         }else{
+         const tokenData=   await sendOtp(session.account.$id,'account')
+            if (tokenData) {
+              await sendVerificationCode(
+                tokenData.token,
+                session.account.email,
+                "account"
+              );
+              router.push("/auth/verify-account-otp");
+        
+         }
+        }
+        resetForm();
         }
       } catch (error) {
         if (error instanceof Error) {
