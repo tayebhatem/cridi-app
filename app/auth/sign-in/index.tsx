@@ -219,11 +219,8 @@ const SignInScreen = () => {
     <>
       <SafeAreaView className="bg-white p-6 h-full w-full flex space-y-3 ">
         <LanguageButton />
-        <View className="py-2">
-          <Logo />
-        </View>
-
-        <View className="">
+        
+        <View className="pt-8">
           <Text className="text-2xl font-kufi-semi-bold">
             {language?.id === "en"
               ? "Login"

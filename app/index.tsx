@@ -63,21 +63,24 @@ const OnboardingScreen = () => {
   }
 
   return (
-    <SafeAreaView className="p-4 flex justify-end items-center space-y-4   bg-white h-full">
-      <Image
-        source={require("../assets/images/onboarding.png")}
-        resizeMode="cover"
-        className="w-64 h-64 my-4"
+    <SafeAreaView className="p-4 flex justify-between items-center space-y-4   bg-white h-full">
+     <View className="flex-1  py-20">
+     <Image
+        source={require("../assets/images/onboarding-2.png")}
+        resizeMode="center"
+        className="flex-1"
       />
-      <View className="w-full">
-        <Text className="text-2xl font-kufi-semi-bold  w-full ">
+     </View>
+     <View className="w-full space-y-4  justify-end">
+     <View className="w-full">
+        <Text className="text-2xl text-center font-kufi-semi-bold  w-full ">
           {language?.id === "en"
             ? "Find stores and track your payments"
             : language?.id === "fr"
             ? "Trouvez des magasins et suivez vos paiements"
             : "ابحث عن المتاجر وتتبع مدفوعاتك"}
         </Text>
-        <Text className="text-neutral-400 font-kufi leading-6">
+        <Text className="text-neutral-400 font-kufi text-center leading-6">
           {language?.id === "en"
             ? "Log in to find stores, manage payments, and track your balances."
             : language?.id === "fr"
@@ -100,6 +103,7 @@ const OnboardingScreen = () => {
           </Text>
         </Button>
       </View>
+     </View>
     </SafeAreaView>
   );
 };

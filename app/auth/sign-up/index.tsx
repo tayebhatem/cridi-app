@@ -248,11 +248,9 @@ const SignUpScreen = () => {
           showsVerticalScrollIndicator={false}
         >
           <LanguageButton />
-          <View className="">
-            <Logo />
-          </View>
+          
 
-          <View className="">
+          <View className="pt-8">
             <Text className="text-2xl font-kufi-semi-bold">
               {language?.id === "en"
                 ? "Sign Up"
